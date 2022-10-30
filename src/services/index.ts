@@ -1,3 +1,3 @@
-import { getUsers } from "./users";
+import { findUsers } from "./users";
 
-export { getUsers };
+export { findUsers };

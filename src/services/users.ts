@@ -1,7 +1,7 @@
 import { WhereAttributeHash } from "sequelize";
 import { models } from "../db/models";
 
-const getUsers = async (where?: WhereAttributeHash) => {
+const findUsers = async (where?: WhereAttributeHash) => {
   try {
     const res = await models.User.findAll({ where });
     return res;
@@ -10,4 +10,4 @@ const getUsers = async (where?: WhereAttributeHash) => {
   }
 };
 
-export { getUsers };
+export { findUsers };

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { getUsers } from "../services";
+import { findUsers } from "../services";
 
-const controllerGetUsers = async (req: Request, res: Response) => {
-  const r = await getUsers();
+const getUsers = async (req: Request, res: Response) => {
+  const r = await findUsers();
   console.log(r);
   if (!r) {
     res.send("no users");
@@ -11,4 +11,4 @@ const controllerGetUsers = async (req: Request, res: Response) => {
   res.send(r);
 };
 
-export { controllerGetUsers };
+export default { getUsers };
