@@ -1,6 +1,8 @@
-import { Dialect, Sequelize, DataTypes } from "sequelize";
+import { Dialect, Sequelize } from "sequelize";
 import user from "./user";
+
 require("dotenv").config();
+
 const sequelize = new Sequelize(
   process.env.DB_NAME || "",
   process.env.DB_USERNAME || "",

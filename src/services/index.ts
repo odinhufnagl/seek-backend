@@ -1,3 +1,4 @@
-import { findUsers } from "./users";
+import { generateToken } from "./auth";
+import { findUsers, findUser, createUser } from "./users";
 
-export { findUsers };
+export { findUsers, findUser, createUser, generateToken };
