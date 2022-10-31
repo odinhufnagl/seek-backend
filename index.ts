@@ -7,6 +7,7 @@ var app = express();
 import routes from "./src/routes/index";
 import { initSocket } from "./src/socket";
 
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
