@@ -53,7 +53,11 @@ const handleMessageChatMessage = ({
   //TODO: create message in db
   sendMessage(
     reciever,
-    SOCKET_MESSAGE(senderId).NEW_MESSAGE(data as ISocketServerMessageData)
+    SOCKET_MESSAGE(senderId).CHAT_MESSAGE({
+      userId: senderId,
+      chatId: data.chatId,
+      message: data.message,
+    })
   );
 };
 
@@ -70,7 +74,11 @@ const handleMessageTyping = ({
 }) => {
   sendMessage(
     reciever,
-    SOCKET_MESSAGE(senderId).IS_TYPING(data as ISocketServerTypingData)
+    SOCKET_MESSAGE(senderId).IS_TYPING({
+      userId: senderId,
+      chatId: data.chatId,
+      isTyping: data.isTyping,
+    })
   );
   //TODO: send notification
   //to do this we first need to get token from reciever (hence the recieverId)

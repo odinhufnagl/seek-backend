@@ -3,24 +3,38 @@ import {
   ISocketServerMessageData,
   ISocketServerTypingData,
   SocketMessageServer,
-  SocketMessageType,
 } from "../types";
 
+type NewMessageProps = {
+  message: string;
+  chatId: number;
+  userId: number;
+};
+type IsTypingProps = {
+  isTyping: boolean;
+  chatId: number;
+  userId: number;
+};
+type IsActiveProps = {
+  isActive: boolean;
+  userId: number;
+};
+
 const SOCKET_MESSAGE = (senderId: number) => ({
-  NEW_MESSAGE: (data: ISocketServerMessageData): SocketMessageServer => ({
+  CHAT_MESSAGE: (data: NewMessageProps): SocketMessageServer => ({
     senderId,
     type: "message",
-    data,
+    data: data as ISocketServerMessageData,
   }),
-  IS_TYPING: (data: ISocketServerTypingData): SocketMessageServer => ({
+  IS_TYPING: (data: IsTypingProps): SocketMessageServer => ({
     type: "typing",
     senderId,
-    data,
+    data: data as ISocketServerTypingData,
   }),
-  IS_ACTIVE: (data: ISocketServerIsActiveData): SocketMessageServer => ({
+  IS_ACTIVE: (data: IsActiveProps): SocketMessageServer => ({
     type: "isActive",
+    data: data as ISocketServerIsActiveData,
     senderId,
-    data,
   }),
 });
 

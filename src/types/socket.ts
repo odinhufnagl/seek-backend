@@ -2,16 +2,19 @@
 
 interface ISocketServerIsActiveData {
   isActive: boolean;
+  userId: number;
 }
 
 interface ISocketServerMessageData {
   message: string;
   chatId: number;
+  userId: number;
 }
 
 interface ISocketServerTypingData {
   isTyping: boolean;
   chatId: number;
+  userId: number;
 }
 
 //How the data from client can look
