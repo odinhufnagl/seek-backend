@@ -1,9 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-import { Secret, verify } from "jsonwebtoken";
+
 import { HTTP_ERROR } from "../constants";
-import { RequestWithUser, IDecode } from "../types";
-import { sendErrorMessage, sendServerErrorMessage } from "../utils";
-const verifyToken = (
+import { RequestWithUser, Decoded } from "../types";
+import {
+  sendErrorMessage,
+  sendServerErrorMessage,
+  decodeToken,
+} from "../utils";
+
+const verifyTokenMiddleware = (
   req: RequestWithUser,
   res: Response,
   next: NextFunction
@@ -13,17 +18,16 @@ const verifyToken = (
     if (!token) {
       return sendErrorMessage(res, HTTP_ERROR.NO_TOKEN_PROVIDED);
     }
-    verify(token, process.env.SECRET as Secret, {}, (err, decoded) => {
-      if (err || !decoded) {
-        return sendErrorMessage(res, HTTP_ERROR.UNAUTHORIZED);
-      }
-      req.user = decoded as IDecode;
-      next();
-    });
+    const decoded = decodeToken(token);
+    if (!decoded) {
+      return sendErrorMessage(res, HTTP_ERROR.UNAUTHORIZED);
+    }
+    req.user = decoded;
+    next();
   } catch (e) {
     console.log(e);
     sendServerErrorMessage(res, e);
   }
 };
 
-export { verifyToken };
+export { verifyTokenMiddleware };

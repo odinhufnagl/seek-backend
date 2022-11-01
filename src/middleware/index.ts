@@ -1,4 +1,4 @@
-import { verifyToken } from "./authJwt";
+import { verifyTokenMiddleware } from "./authJwt";
 import { checkDuplicateEmail } from "./verifySignUp";
 
-export { verifyToken, checkDuplicateEmail };
+export { checkDuplicateEmail, verifyTokenMiddleware };
