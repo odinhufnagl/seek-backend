@@ -5,7 +5,7 @@ import {
   SocketMessageServer,
 } from "../types";
 
-type NewMessageProps = {
+type ChatMessageProps = {
   message: string;
   chatId: number;
   userId: number;
@@ -21,7 +21,7 @@ type IsActiveProps = {
 };
 
 const SOCKET_MESSAGE = (senderId: number) => ({
-  CHAT_MESSAGE: (data: NewMessageProps): SocketMessageServer => ({
+  CHAT_MESSAGE: (data: ChatMessageProps): SocketMessageServer => ({
     senderId,
     type: "message",
     data: data as ISocketServerMessageData,
