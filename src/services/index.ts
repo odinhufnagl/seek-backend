@@ -5,6 +5,7 @@ import {
   subscribeToTopic,
   unsubscribeFromTopic,
 } from "./notification";
+import { sendEmail } from "./email";
 
 export {
   findUsers,
@@ -14,4 +15,5 @@ export {
   sendNotification,
   subscribeToTopic,
   unsubscribeFromTopic,
+  sendEmail,
 };

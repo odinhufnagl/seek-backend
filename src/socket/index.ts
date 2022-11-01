@@ -1,12 +1,8 @@
 import Socket from "ws";
 import { SOCKET_MESSAGE } from "../constants";
 import {
-  ISocketClientIsActiveData,
   ISocketClientMessageData,
   ISocketClientTypingData,
-  ISocketServerIsActiveData,
-  ISocketServerMessageData,
-  ISocketServerTypingData,
   SocketMessageClient,
   SocketMessageServer,
 } from "../types";

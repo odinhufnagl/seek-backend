@@ -20,6 +20,8 @@ import {
   INotificationContent,
 } from "./notification";
 
+import { EmailData } from "./email";
+
 type Decoded = {
   id: number;
 };
@@ -53,4 +55,5 @@ export {
   ISocketClientMessageData,
   ISocketClientTypingData,
   ISocketClientIsActiveData,
+  EmailData,
 };
