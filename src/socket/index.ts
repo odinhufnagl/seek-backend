@@ -53,7 +53,8 @@ const handleMessageChatMessage = ({
   //TODO: create message in db
   sendMessage(
     reciever,
-    SOCKET_MESSAGE(senderId).CHAT_MESSAGE({
+    SOCKET_MESSAGE.CHAT_MESSAGE({
+      senderId,
       userId: senderId,
       chatId: data.chatId,
       message: data.message,
@@ -74,7 +75,8 @@ const handleMessageTyping = ({
 }) => {
   sendMessage(
     reciever,
-    SOCKET_MESSAGE(senderId).IS_TYPING({
+    SOCKET_MESSAGE.IS_TYPING({
+      senderId,
       userId: senderId,
       chatId: data.chatId,
       isTyping: data.isTyping,
