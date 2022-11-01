@@ -1,4 +1,14 @@
-import { SocketMessageType, SocketMessage } from "./socket";
+import {
+  SocketMessageType,
+  SocketMessageServer,
+  SocketMessageClient,
+  ISocketServerIsActiveData,
+  ISocketServerTypingData,
+  ISocketServerMessageData,
+  ISocketClientMessageData,
+  ISocketClientTypingData,
+  ISocketClientIsActiveData,
+} from "./socket";
 import { Request } from "express";
 import { IUser } from "./models";
 import {
@@ -10,12 +20,12 @@ import {
   INotificationContent,
 } from "./notification";
 
-interface IDecode {
+type Decoded = {
   id: number;
-}
+};
 
 interface RequestWithUser extends Request {
-  user?: IDecode;
+  user?: Decoded;
 }
 
 type HttpResponseData = {
@@ -26,14 +36,21 @@ type HttpResponseData = {
 export {
   IUser,
   RequestWithUser,
-  IDecode,
   HttpResponseData,
   SocketMessageType,
-  SocketMessage,
   INotification,
   NotificationData,
   INotificationIsActiveData,
   INotificationTypingData,
   INotificationMessageData,
   INotificationContent,
+  Decoded,
+  SocketMessageClient,
+  SocketMessageServer,
+  ISocketServerIsActiveData,
+  ISocketServerTypingData,
+  ISocketServerMessageData,
+  ISocketClientMessageData,
+  ISocketClientTypingData,
+  ISocketClientIsActiveData,
 };
