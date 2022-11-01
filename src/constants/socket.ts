@@ -18,7 +18,7 @@ const SOCKET_MESSAGE = (senderId: number) => ({
     data,
   }),
   IS_ACTIVE: (data: ISocketServerIsActiveData): SocketMessageServer => ({
-    type: "typing",
+    type: "isActive",
     senderId,
     data,
   }),

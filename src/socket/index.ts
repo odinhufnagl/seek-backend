@@ -1,46 +1,176 @@
 import Socket from "ws";
-import { SocketMessage } from "../types";
-import { getQueryParams } from "../utils";
+import { SOCKET_MESSAGE } from "../constants";
+import {
+  ISocketClientIsActiveData,
+  ISocketClientMessageData,
+  ISocketClientTypingData,
+  ISocketServerIsActiveData,
+  ISocketServerMessageData,
+  ISocketServerTypingData,
+  SocketMessageClient,
+  SocketMessageServer,
+} from "../types";
+import { decodeToken } from "../utils";
 
-const handleConnection = (ws: Socket.WebSocket, userId: number): void => {
-  //set user is active in db and
-  //send it to everyone user have a chat with
+//Constructing a storage to store clients, may use the db later or something more safe
+
+type UserId = number;
+type Storage = Record<UserId, Socket.WebSocket>;
+class ClientsStorage {
+  storage: Storage;
+  constructor() {
+    this.storage = [];
+  }
+  removeClient = (id: number) => delete this.storage[id];
+  storeClient = (id: number, ws: Socket.WebSocket) => (this.storage[id] = ws);
+  getClient = (id: number) => this.storage[id];
+}
+
+const sendMessage = (
+  recievers: Socket.WebSocket | Socket.WebSocket[],
+  msg: SocketMessageServer
+): void => {
+  if (Array.isArray(recievers)) {
+    recievers.forEach((reciever) => {
+      reciever.send(JSON.stringify(msg));
+    });
+  } else {
+    recievers.send(JSON.stringify(msg));
+  }
 };
 
-const handleClose = (ws: Socket.WebSocket, userId: number): void => {
-  //set user is not active in db and send it to all users
-  //that user have a chat with
+//handle-functions for different types of messages we could recieve from client
+
+const handleMessageChatMessage = ({
+  reciever,
+  senderId,
+  data,
+}: {
+  reciever: Socket.WebSocket;
+  senderId: number;
+  data: ISocketClientMessageData;
+}) => {
+  //TODO: create message in db
+  sendMessage(
+    reciever,
+    SOCKET_MESSAGE(senderId).NEW_MESSAGE(data as ISocketServerMessageData)
+  );
 };
 
-const handleMessage = (ws: Socket.WebSocket, msg: Socket.RawData): void => {
+const handleMessageTyping = ({
+  reciever,
+  senderId,
+  data,
+  recieverId,
+}: {
+  reciever: Socket.WebSocket;
+  senderId: number;
+  data: ISocketClientTypingData;
+  recieverId: number;
+}) => {
+  sendMessage(
+    reciever,
+    SOCKET_MESSAGE(senderId).IS_TYPING(data as ISocketServerTypingData)
+  );
+  //TODO: send notification
+  //to do this we first need to get token from reciever (hence the recieverId)
+  //then we need to get senders name by accessing the db
+  //and then the chatId from the data
+};
+
+//handle-functions for different (events, connection, close and message)
+
+const handleConnection = (userId: number): void => {
+  //set user is active in db
+  //then get all users that user has chat with
+  //then getClients that takes in a list of ids and returns a list of clients
+  //then send message to all the clients
+};
+
+const handleClose = (userId: number): void => {
+  //set user is not active in db
+  //then get all users that user has chat with
+  //then getClients that takes in a list of ids and returns a list of clients
+  //then send message to all the clients
+};
+
+const handleMessage = (
+  msg: Socket.RawData,
+  userId: number,
+  storage: ClientsStorage
+): void => {
   try {
-    const parsedMsg: SocketMessage = JSON.parse(msg.toString());
-    //send the message to the users it is concerning
-    //if it is chatmessage or typing, only send it to the user who is part of the chat
+    const { type, data, recieverId }: SocketMessageClient = JSON.parse(
+      msg.toString()
+    );
+
+    const reciever = storage.getClient(recieverId);
+    if (!reciever) {
+      return;
+    }
+
+    switch (type) {
+      case "message":
+        handleMessageChatMessage({
+          reciever,
+          senderId: userId,
+          data: data as ISocketClientMessageData,
+        });
+        break;
+      case "typing":
+        handleMessageTyping({
+          reciever,
+          senderId: userId,
+          data: data as ISocketClientTypingData,
+          recieverId,
+        });
+        break;
+      default:
+        break;
+    }
   } catch (e) {
     console.log(e);
   }
+};
+
+//all requests should have a header with token that has the senderId stored,
+//and this token needs to be decoded
+
+const verifyRequest = (req: any): number | undefined => {
+  const token = req.headers["x-access-token"] as string;
+  if (!token) {
+    return;
+  }
+  const decoded = decodeToken(token);
+  if (!decoded) {
+    return;
+  }
+  return decoded.id;
 };
 
 const initSocket = (): void => {
   const socket = new Socket.Server({
     port: Number(process.env.WEBSOCKET_PORT),
   });
+  const storage = new ClientsStorage();
   console.log("Socket is listening on", process.env.WEBSOCKET_PORT);
 
   socket.on("connection", (ws, req) => {
-    const params = getQueryParams(req.url);
-    if (!params.userId) {
+    const userId = verifyRequest(req);
+    if (!userId) {
       return ws.close();
     }
-    handleConnection(ws, params.userId);
+    storage.storeClient(userId, ws);
+
+    handleConnection(userId);
 
     ws.on("close", () => {
-      handleClose(ws, params.userId);
+      storage.removeClient(userId);
+      handleClose(userId);
     });
 
     ws.on("message", (msg) => {
-      handleMessage(ws, msg);
+      handleMessage(msg, userId, storage);
     });
   });
 };
