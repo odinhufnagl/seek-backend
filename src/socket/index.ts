@@ -90,14 +90,20 @@ const handleMessageTyping = ({
 
 //handle-functions for different (events, connection, close and message)
 
-const handleConnection = (userId: number): void => {
+const handleConnection = (
+  userId: number,
+  storage: ClientsStorage,
+  ws: Socket.WebSocket
+): void => {
+  storage.storeClient(userId, ws);
   //set user is active in db
   //then get all users that user has chat with
   //then getClients that takes in a list of ids and returns a list of clients
   //then send message to all the clients
 };
 
-const handleClose = (userId: number): void => {
+const handleClose = (userId: number, storage: ClientsStorage): void => {
+  storage.removeClient(userId);
   //set user is not active in db
   //then get all users that user has chat with
   //then getClients that takes in a list of ids and returns a list of clients
@@ -170,13 +176,10 @@ const initSocket = (): void => {
     if (!userId) {
       return ws.close();
     }
-    storage.storeClient(userId, ws);
-
-    handleConnection(userId);
+    handleConnection(userId, storage, ws);
 
     ws.on("close", () => {
-      storage.removeClient(userId);
-      handleClose(userId);
+      handleClose(userId, storage);
     });
 
     ws.on("message", (msg) => {
