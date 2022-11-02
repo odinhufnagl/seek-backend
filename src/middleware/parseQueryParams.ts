@@ -3,6 +3,8 @@ import { Response } from "express";
 import { RequestWithDBOptions } from "../types";
 import { sendServerErrorMessage } from "../utils";
 
+//DBOptions should be available in the req, so we dont have to parse them in each controller
+
 const parseQueryParamsToDBOptions = async (
   req: RequestWithDBOptions,
   res: Response,

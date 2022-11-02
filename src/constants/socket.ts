@@ -37,6 +37,9 @@ const SOCKET_MESSAGE = {
     type: "isActive",
     data: props,
   }),
+  NOT_AUTHORIZED: (): SocketMessageServer => ({
+    type: "notAuthorized",
+  }),
 };
 
 export { SOCKET_MESSAGE };

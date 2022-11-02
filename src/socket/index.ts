@@ -170,15 +170,19 @@ const initSocket = (): void => {
   socket.on("connection", (ws, req) => {
     const userId = verifyRequest(req);
     if (!userId) {
-      return ws.close();
+      sendMessage(ws, SOCKET_MESSAGE.NOT_AUTHORIZED());
+      return;
     }
+    console.log("connection opened");
     handleConnection(userId, storage, ws);
 
     ws.on("close", () => {
+      console.log("connection close");
       handleClose(userId, storage);
     });
 
     ws.on("message", (msg) => {
+      console.log(msg.toString());
       handleMessage(msg, userId, storage);
     });
   });
