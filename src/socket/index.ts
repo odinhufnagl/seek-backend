@@ -163,6 +163,7 @@ const verifyRequest = (req: any): number | undefined => {
 const initSocket = (): void => {
   const socket = new Socket.Server({
     port: Number(process.env.WEBSOCKET_PORT),
+    verifyClient: (info: any) => verifyRequest(info.req),
   });
   const storage = new ClientsStorage();
   console.log("Socket is listening on", process.env.WEBSOCKET_PORT);
@@ -170,7 +171,7 @@ const initSocket = (): void => {
   socket.on("connection", (ws, req) => {
     const userId = verifyRequest(req);
     if (!userId) {
-      sendMessage(ws, SOCKET_MESSAGE.NOT_AUTHORIZED());
+      ws.close();
       return;
     }
     console.log("connection opened");
