@@ -8,7 +8,7 @@ type CreateUserValues = {
 };
 
 export const findUsers = async (
-  options: FindOptions
+  options?: FindOptions
 ): Promise<[IUser] | undefined> => {
   try {
     const res = (await models.User.findAll(options)) as [IUser];

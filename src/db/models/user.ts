@@ -22,6 +22,10 @@ const user = (sequelize: Sequelize) => {
           len: [7, 100],
         },
       },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       timestamps: true,
