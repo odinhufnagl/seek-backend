@@ -27,7 +27,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
 const signIn = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
-    const user = await findUser({ email });
+    const user = await findUser({ where: { email } });
     if (!user) {
       return sendErrorMessage(res, HTTP_ERROR.DATA_NOT_FOUND);
     }

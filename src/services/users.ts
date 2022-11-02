@@ -1,4 +1,4 @@
-import { Optional, WhereAttributeHash } from "sequelize";
+import { FindOptions } from "sequelize";
 import { models } from "../db/models";
 import { IUser } from "../types";
 
@@ -7,29 +7,29 @@ type CreateUserValues = {
   password: string;
 };
 
-const findUsers = async (
-  where?: WhereAttributeHash
+export const findUsers = async (
+  options?: FindOptions
 ): Promise<[IUser] | undefined> => {
   try {
-    const res = (await models.User.findAll({ where })) as [IUser];
+    const res = (await models.User.findAll(options)) as [IUser];
     return res;
   } catch (e) {
     return;
   }
 };
 
-const findUser = async (
-  where?: WhereAttributeHash
+export const findUser = async (
+  options: FindOptions
 ): Promise<IUser | undefined> => {
   try {
-    const res = (await models.User.findOne({ where })) as IUser;
+    const res = (await models.User.findOne(options)) as IUser;
     return res;
   } catch (e) {
     return;
   }
 };
 
-const findUserByPK = async (id: number): Promise<IUser | undefined> => {
+export const findUserByPK = async (id: number): Promise<IUser | undefined> => {
   try {
     const res = (await models.User.findByPk(id)) as IUser;
     return res;
@@ -38,7 +38,7 @@ const findUserByPK = async (id: number): Promise<IUser | undefined> => {
   }
 };
 
-const createUser = async (
+export const createUser = async (
   values: CreateUserValues
 ): Promise<IUser | undefined> => {
   try {
@@ -49,4 +49,14 @@ const createUser = async (
   }
 };
 
-export { findUsers, createUser, findUser, findUserByPK };
+export const updateUser = async (
+  userId: number,
+  toUpdate: IUser
+): Promise<[affectedCount: number] | undefined> => {
+  try {
+    const res = await models.User.update(toUpdate, { where: { id: userId } });
+    return res;
+  } catch (e) {
+    console.log(e);
+  }
+};

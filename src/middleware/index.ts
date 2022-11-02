@@ -1,4 +1,8 @@
 import { verifyTokenMiddleware } from "./authJwt";
 import { checkDuplicateEmail } from "./verifySignUp";
-
-export { checkDuplicateEmail, verifyTokenMiddleware };
+import { parseQueryParamsToDBOptions } from "./parseQueryParams";
+export {
+  checkDuplicateEmail,
+  verifyTokenMiddleware,
+  parseQueryParamsToDBOptions,
+};

@@ -1,5 +1,5 @@
 import Socket from "ws";
-import { SOCKET_MESSAGE } from "../constants";
+import { SOCKET_MESSAGE, TOKEN_HEADER_KEY } from "../constants";
 import {
   ISocketClientMessageData,
   ISocketClientTypingData,
@@ -149,7 +149,7 @@ const handleMessage = (
 //and this token needs to be decoded
 
 const verifyRequest = (req: any): number | undefined => {
-  const token = req.headers["x-access-token"] as string;
+  const token = req.headers[TOKEN_HEADER_KEY] as string;
   if (!token) {
     return;
   }
@@ -163,6 +163,7 @@ const verifyRequest = (req: any): number | undefined => {
 const initSocket = (): void => {
   const socket = new Socket.Server({
     port: Number(process.env.WEBSOCKET_PORT),
+    verifyClient: (info: any) => verifyRequest(info.req),
   });
   const storage = new ClientsStorage();
   console.log("Socket is listening on", process.env.WEBSOCKET_PORT);
@@ -170,15 +171,19 @@ const initSocket = (): void => {
   socket.on("connection", (ws, req) => {
     const userId = verifyRequest(req);
     if (!userId) {
-      return ws.close();
+      ws.close();
+      return;
     }
+    console.log("connection opened");
     handleConnection(userId, storage, ws);
 
     ws.on("close", () => {
+      console.log("connection close");
       handleClose(userId, storage);
     });
 
     ws.on("message", (msg) => {
+      console.log(msg.toString());
       handleMessage(msg, userId, storage);
     });
   });
