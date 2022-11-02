@@ -1,9 +1,4 @@
-import {
-  ISocketServerIsActiveData,
-  ISocketServerMessageData,
-  ISocketServerTypingData,
-  SocketMessageServer,
-} from "../types";
+import { ISocketServerMessageData, SocketMessageServer } from "../types";
 
 type ChatMessageProps = {
   message: string;
