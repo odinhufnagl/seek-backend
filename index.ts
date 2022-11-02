@@ -19,9 +19,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api", routes);
 
 const initApp = (): void => {
-  app.listen(process.env.PORT, function () {
-    console.log(`listening on port ${process.env.PORT}`);
-  });
+  app.listen(process.env.PORT, () =>
+    console.log(`listening on port ${process.env.PORT}`)
+  );
 };
 
 sequelize.sync({ force: true }).then(async () => {

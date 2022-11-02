@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-
-import { HTTP_ERROR } from "../constants";
+import { HTTP_ERROR, TOKEN_HEADER_KEY } from "../constants";
 import { RequestWithUser, Decoded } from "../types";
 import {
   sendErrorMessage,
@@ -14,7 +13,7 @@ const verifyTokenMiddleware = (
   next: NextFunction
 ): void => {
   try {
-    const token = req.headers["x-access-token"] as string;
+    const token = req.headers[TOKEN_HEADER_KEY] as string;
     if (!token) {
       return sendErrorMessage(res, HTTP_ERROR.NO_TOKEN_PROVIDED);
     }

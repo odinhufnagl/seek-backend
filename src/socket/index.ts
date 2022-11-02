@@ -1,5 +1,5 @@
 import Socket from "ws";
-import { SOCKET_MESSAGE } from "../constants";
+import { SOCKET_MESSAGE, TOKEN_HEADER_KEY } from "../constants";
 import {
   ISocketClientMessageData,
   ISocketClientTypingData,
@@ -149,7 +149,7 @@ const handleMessage = (
 //and this token needs to be decoded
 
 const verifyRequest = (req: any): number | undefined => {
-  const token = req.headers["x-access-token"] as string;
+  const token = req.headers[TOKEN_HEADER_KEY] as string;
   if (!token) {
     return;
   }
