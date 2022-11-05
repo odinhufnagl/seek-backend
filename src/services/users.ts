@@ -2,11 +2,6 @@ import { FindOptions } from "sequelize";
 import { models } from "../db/models";
 import { IUser } from "../types";
 
-type CreateUserValues = {
-  email: string;
-  password: string;
-};
-
 export const findUsers = async (
   options?: FindOptions
 ): Promise<[IUser] | undefined> => {
@@ -38,9 +33,7 @@ export const findUserByPK = async (id: number): Promise<IUser | undefined> => {
   }
 };
 
-export const createUser = async (
-  values: CreateUserValues
-): Promise<IUser | undefined> => {
+export const createUser = async (values: IUser): Promise<IUser | undefined> => {
   try {
     const res = (await models.User.create(values as any)) as IUser;
     return res;

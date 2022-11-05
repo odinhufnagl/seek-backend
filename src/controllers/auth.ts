@@ -8,16 +8,16 @@ import { HTTP_ERROR } from "../constants";
 
 const signUp = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    const { password, ...userData } = req.body;
     const user = await createUser({
-      email,
       password: hashSync(password),
+      ...userData,
     });
     if (!user) {
       return sendErrorMessage(res, HTTP_ERROR.DATA_NOT_CREATED);
     }
     const token = generateToken({ id: user.id });
-    res.send({ accessToken: token });
+    res.send({ accessToken: token, user });
   } catch (e) {
     console.log(e);
     sendServerErrorMessage(res, e);
@@ -28,10 +28,10 @@ const signIn = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
     const user = await findUser({ where: { email } });
-    if (!user) {
+    if (!user || !user.password) {
       return sendErrorMessage(res, HTTP_ERROR.DATA_NOT_FOUND);
     }
-    var passwordIsValid = compareSync(password, user.password);
+    var passwordIsValid = compareSync(password, user?.password);
 
     if (!passwordIsValid) {
       return sendErrorMessage(res, HTTP_ERROR.INVALID_PASSWORD);
@@ -40,10 +40,7 @@ const signIn = async (req: Request, res: Response): Promise<void> => {
     const token = generateToken({ id: user.id });
 
     res.send({
-      user: {
-        id: user.id,
-        email: user.email,
-      },
+      user,
       accessToken: token,
     });
   } catch (e) {
@@ -66,7 +63,7 @@ const authenticate = async (
       return sendErrorMessage(res, HTTP_ERROR.DATA_NOT_FOUND);
     }
     const token = generateToken({ id: user.id });
-    res.send({ user: { id: user.id, email: user.email }, accessToken: token });
+    res.send({ user, accessToken: token });
   } catch (e) {
     console.log(e);
     sendServerErrorMessage(res, e);
