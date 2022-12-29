@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { createUser, findUser, generateToken } from "../services";
+import { generateToken } from "../services";
 import { compareSync, hashSync } from "bcryptjs";
-import { findUserByPK } from "../services/users";
+import { createUser, findUser, findUserByPK } from "../services/users";
 import { RequestWithUser } from "../types";
 import { sendErrorMessage, sendServerErrorMessage } from "../utils";
 import { HTTP_ERROR } from "../constants";

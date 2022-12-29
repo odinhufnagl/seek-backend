@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { HTTP_ERROR } from "../constants";
 import { EmploymentType, WordVector } from "../db/models";
 import Tag from "../db/models/tag";
+import { findJobs } from "../services";
 
 import { findUserByPK, findUsers, updateUser } from "../services/users";
 import { RequestWithDBOptions } from "../types";
@@ -14,14 +15,15 @@ export const include = [
     include: [{ model: WordVector, as: "name" }],
   },
   { model: EmploymentType, as: "employmentTypes" },
+  { model: WordVector, as: "title" },
 ];
 
-const getUsers = async (
+const getJobs = async (
   req: RequestWithDBOptions,
   res: Response
 ): Promise<void> => {
   try {
-    const r = await findUsers({
+    const r = await findJobs({
       ...req.dbOptions,
       include,
     });
@@ -36,36 +38,4 @@ const getUsers = async (
   }
 };
 
-const getUserByPK = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const userId = Number(req.params.id);
-
-    const r = await findUserByPK(userId, {
-      include,
-    });
-    if (!r) {
-      return sendErrorMessage(res, HTTP_ERROR.DATA_NOT_FOUND);
-    }
-    res.send(r);
-  } catch (e) {
-    console.log(e);
-    sendServerErrorMessage(res, e);
-  }
-};
-
-const putUser = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const userId = Number(req.params.id);
-    const toUpdate = req.body;
-    const r = await updateUser(userId, toUpdate);
-    if (!r) {
-      return sendErrorMessage(res, HTTP_ERROR.DATA_NOT_UPDATED);
-    }
-    res.send(r);
-  } catch (e) {
-    console.log(e);
-    sendServerErrorMessage(res, e);
-  }
-};
-
-export default { getUsers, getUserByPK, putUser };
+export default { getJobs };

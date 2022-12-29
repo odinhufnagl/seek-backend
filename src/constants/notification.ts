@@ -18,7 +18,7 @@ type DailyQuestionContentProps = {
 };
 
 const NOTIFICATION_CONTENT = {
-  NEW_MESSAGE: ({
+  CHAT_MESSAGE: ({
     userName,
     message,
   }: NewMessageContentProps): INotificationContent => ({
@@ -66,7 +66,7 @@ const convertValuesToStrings = (object: Props): NotificationData => {
 };
 
 const NOTIFICATION = {
-  NEW_MESSAGE: ({
+  CHAT_MESSAGE: ({
     message,
     userName,
     userId,
@@ -74,7 +74,7 @@ const NOTIFICATION = {
     token,
   }: NewMessageProps): INotification => ({
     token,
-    notification: NOTIFICATION_CONTENT.NEW_MESSAGE({ userName, message }),
+    notification: NOTIFICATION_CONTENT.CHAT_MESSAGE({ userName, message }),
     data: {
       ...convertValuesToStrings({ userId, chatId, message } as NewMessageProps),
       type: "message",

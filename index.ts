@@ -1,16 +1,10 @@
 require("dotenv").config();
 import express from "express";
 import bodyParser from "body-parser";
-import { sequelize } from "./src/db/models/index";
-import * as admin from "firebase-admin";
+import { models, sequelize, Tag, WordVector } from "./src/db/models/index";
 import routes from "./src/routes/index";
-import { initSocket } from "./src/socket";
-
-const serviceAccount = require("./serviceAccountKey.json");
 
 var app = express();
-
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -26,5 +20,5 @@ const initApp = (): void => {
 
 sequelize.sync({ force: true }).then(async () => {
   initApp();
-  initSocket();
+  // initSocket();
 });
