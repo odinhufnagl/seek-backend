@@ -1,12 +1,5 @@
 import { Dialect, Sequelize } from "sequelize";
-import Company from "./company";
-import EmploymentType from "./employmentType";
-import Job from "./job";
-import PredictedUserJobRating from "./predictedUserJobRating";
-import Tag from "./tag";
-import User from "./user";
-import UserJobRating from "./userJobRating";
-import WordVector from "./wordVector";
+import user from "./user";
 
 require("dotenv").config();
 
@@ -21,20 +14,8 @@ const sequelize = new Sequelize(
 );
 
 const models = {
-  WordVector,
-  Company,
-  Job,
-  User,
-  Tag,
-  EmploymentType,
-  UserJobRating,
-  PredictedUserJobRating,
+  User: user(sequelize),
 };
-
-Object.keys(models).forEach((key, i) => {
-  const val: any = Object.values(models)[i];
-  val._init(sequelize);
-});
 
 Object.keys(models).forEach((key, i) => {
   const val: any = Object.values(models)[i];
@@ -43,15 +24,4 @@ Object.keys(models).forEach((key, i) => {
   }
 });
 
-export {
-  sequelize,
-  models,
-  WordVector,
-  Company,
-  Job,
-  User,
-  Tag,
-  EmploymentType,
-  PredictedUserJobRating,
-  UserJobRating,
-};
+export { sequelize, models };
