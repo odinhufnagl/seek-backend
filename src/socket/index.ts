@@ -1,15 +1,5 @@
-import Socket from "ws";
-import { SOCKET_MESSAGE, TOKEN_HEADER_KEY } from "../constants";
-import {
-  ISocketClientMessageData,
-  ISocketClientTypingData,
-  SocketMessageClient,
-  SocketMessageServer,
-} from "../types";
-import { decodeToken } from "../utils";
-
 //Constructing a storage to store clients, may use the db later or something more safe
-
+/*
 type UserId = number;
 type Storage = Record<UserId, Socket.WebSocket>;
 class ClientsStorage {
@@ -44,7 +34,7 @@ const handleMessageChatMessage = ({
 }: {
   reciever: Socket.WebSocket;
   senderId: number;
-  data: ISocketClientMessageData;
+  data: SocketClientMessageData;
 }) => {
   //TODO: create message in db
   sendMessage(
@@ -66,7 +56,7 @@ const handleMessageTyping = ({
 }: {
   reciever: Socket.WebSocket;
   senderId: number;
-  data: ISocketClientTypingData;
+  data: SocketClientTypingData;
   recieverId: number;
 }) => {
   sendMessage(
@@ -126,14 +116,14 @@ const handleMessage = (
         handleMessageChatMessage({
           reciever,
           senderId: userId,
-          data: data as ISocketClientMessageData,
+          data: data as SocketClientMessageData,
         });
         break;
       case "typing":
         handleMessageTyping({
           reciever,
           senderId: userId,
-          data: data as ISocketClientTypingData,
+          data: data as SocketClientTypingData,
           recieverId,
         });
         break;
@@ -190,3 +180,4 @@ const initSocket = (): void => {
 };
 
 export { initSocket };
+*/

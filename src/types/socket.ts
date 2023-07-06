@@ -1,17 +1,17 @@
 //how data from server to client can look
 
-export interface ISocketServerIsActiveData {
+export interface SocketServerIsActiveData {
   isActive: boolean;
   userId: number;
 }
 
-export interface ISocketServerMessageData {
+export interface SocketServerMessageData {
   message: string;
   chatId: number;
   userId: number;
 }
 
-export interface ISocketServerTypingData {
+export interface SocketServerTypingData {
   isTyping: boolean;
   chatId: number;
   userId: number;
@@ -19,21 +19,19 @@ export interface ISocketServerTypingData {
 
 //How the data from client can look
 
-export interface ISocketClientIsActiveData {
+export interface SocketClientIsActiveData {
   isActive: boolean;
 }
 
-export interface ISocketClientMessageData {
+export interface SocketClientMessageData {
   message: string;
   chatId: number;
 }
 
-export interface ISocketClientTypingData {
+export interface SocketClientTypingData {
   isTyping: boolean;
   chatId: number;
 }
-
-//The types to use
 
 export type SocketMessageType = "message" | "typing" | "isActive";
 
@@ -41,16 +39,16 @@ export type SocketMessageServer = {
   type: SocketMessageType;
   senderId?: number;
   data?:
-    | ISocketServerIsActiveData
-    | ISocketServerMessageData
-    | ISocketServerTypingData;
+    | SocketServerIsActiveData
+    | SocketServerMessageData
+    | SocketServerTypingData;
 };
 
 export type SocketMessageClient = {
   recieverId: number;
   type: SocketMessageType;
   data:
-    | ISocketClientMessageData
-    | ISocketClientTypingData
-    | ISocketClientIsActiveData;
+    | SocketClientMessageData
+    | SocketClientTypingData
+    | SocketClientIsActiveData;
 };

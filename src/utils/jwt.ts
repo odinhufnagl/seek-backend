@@ -1,10 +1,9 @@
-import { verify, Secret } from "jsonwebtoken";
-import { Decoded } from "../types";
+import { Secret, verify } from "jsonwebtoken";
 
-const decodeToken = (token: string): Decoded | undefined => {
+const decodeToken = (token: string): any => {
   try {
     const decoded = verify(token, process.env.SECRET as Secret);
-    return decoded as Decoded;
+    return decoded;
   } catch (e) {
     console.log(e);
   }

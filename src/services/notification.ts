@@ -1,9 +1,9 @@
 import * as admin from "firebase-admin";
 
-import { INotification, NotificationData } from "../types";
+import { Notification } from "../types";
 
 const sendNotification = async (
-  notification: INotification
+  notification: Notification
 ): Promise<boolean> => {
   try {
     const res = await admin
