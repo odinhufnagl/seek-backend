@@ -1,32 +1,25 @@
-import { NextFunction, Request, Response } from "express";
-import { HTTP_ERROR, TOKEN_HEADER_KEY } from "../constants";
-import { RequestWithUser, Decoded } from "../types";
-import {
-  sendErrorMessage,
-  sendServerErrorMessage,
-  decodeToken,
-} from "../utils";
+import { NextFunction, Response } from "express";
+import { ApiAuthenticateError, ApiNoTokenError } from "../classes";
+import { TOKEN_HEADER_KEY } from "../constants";
+import { Request, userJWTData } from "../types";
+import { decodeToken } from "../utils";
 
 const verifyTokenMiddleware = (
-  req: RequestWithUser,
+  req: Request,
   res: Response,
   next: NextFunction
 ): void => {
-  try {
-    const token = req.headers[TOKEN_HEADER_KEY] as string;
-    if (!token) {
-      return sendErrorMessage(res, HTTP_ERROR.NO_TOKEN_PROVIDED);
-    }
-    const decoded = decodeToken(token);
-    if (!decoded) {
-      return sendErrorMessage(res, HTTP_ERROR.UNAUTHORIZED);
-    }
-    req.user = decoded;
-    next();
-  } catch (e) {
-    console.log(e);
-    sendServerErrorMessage(res, e);
+  const token = req.headers[TOKEN_HEADER_KEY] as string;
+  if (!token) {
+    throw new ApiNoTokenError();
   }
+  const decoded = decodeToken(token) as userJWTData;
+  if (!decoded) {
+    throw new ApiAuthenticateError();
+  }
+  req.curUserId = decoded.id;
+  req.userRole = decoded.userRole;
+  next();
 };
 
 export { verifyTokenMiddleware };

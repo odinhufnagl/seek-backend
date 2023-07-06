@@ -1,47 +1,69 @@
-export interface INotificationIsActiveData {
+import { ServerLanguage } from "./serverLanguages";
+
+export interface NotificationIsActiveData {
   userId: string;
   isActive: string;
-  type: NotificationDataType;
+  type: NotificationType;
 }
 
-export interface INotificationMessageData {
+export interface NotificationMessageData {
   userId: string;
   message: string;
   chatId: string;
-  type: NotificationDataType;
+  type: NotificationType;
 }
 
-export interface INotificationTypingData {
+export interface NotificationTypingData {
   userId: string;
   isTyping: string;
   chatId: string;
-  type: NotificationDataType;
+  type: NotificationType;
 }
 
-export interface INotificationDailyQuestionData {
-  type: NotificationDataType;
+export interface NotificationDailyQuestionData {
+  type: NotificationType;
 }
 
-export interface INotificationContent {
+export interface NotificationContent {
   title: string;
   body: string;
 }
 
-export type NotificationDataType =
+export type NotificationType =
   | "message"
   | "typing"
   | "isActive"
   | "dailyQuestion";
 
 export type NotificationData =
-  | INotificationIsActiveData
-  | INotificationMessageData
-  | INotificationTypingData
-  | INotificationDailyQuestionData;
+  | NotificationIsActiveData
+  | NotificationMessageData
+  | NotificationTypingData
+  | NotificationDailyQuestionData;
 
-export interface INotification {
+export interface Notification {
   token?: string;
   topic?: string;
-  notification: INotificationContent;
+  notification: NotificationContent;
   data?: NotificationData;
 }
+
+export type DefaultNotificationNewMessageProps = {
+  token: string;
+  message: string;
+  userName: string;
+  userId: number;
+  chatId: number;
+  language: ServerLanguage;
+};
+export type DefaultNotificationIsTypingProps = {
+  token: string;
+  userName: string;
+  userId: number;
+  chatId: number;
+  language: ServerLanguage;
+};
+
+export type DefaultNotificationProps =
+  | DefaultNotificationNewMessageProps
+  | DefaultNotificationIsTypingProps;

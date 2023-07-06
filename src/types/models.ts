@@ -1,8 +1,8 @@
 import { Model } from "sequelize";
 
-export interface IUser extends Partial<Model<any, any>> {
+export interface DBUser extends Partial<Model<any, any>> {
   email?: string;
-  password?: string;
+  password: string;
   name?: string;
   id?: number;
 }

@@ -1,9 +1,20 @@
 import { NextFunction } from "express";
 import { Response } from "express";
+import { WhereOptions } from "sequelize";
+import { ApiQueryParamsError } from "../classes";
 import { RequestWithDBOptions } from "../types";
-import { sendServerErrorMessage } from "../utils";
-
+import { sequelize } from "../db/models/index";
+import { Order } from "sequelize";
+const queryParser = require("sequelize-query")(sequelize);
 //DBOptions should be available in the req, so we dont have to parse them in each controller
+
+type ParsedQueryParams = {
+  where: WhereOptions;
+  offset: number;
+  limit: number;
+  attributes: string[];
+  order: Order;
+};
 
 const parseQueryParamsToDBOptions = async (
   req: RequestWithDBOptions,
@@ -11,21 +22,12 @@ const parseQueryParamsToDBOptions = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { limit, offset, orderBy, sortBy, ...where } = req.query;
-
-    req.dbOptions = {
-      offset: offset ? Number(offset) : undefined,
-      limit: limit ? Number(limit) : undefined,
-      order:
-        sortBy && orderBy ? [[String(sortBy), String(orderBy)]] : undefined,
-      where,
-    };
-    req.orderBy = String(orderBy);
-    req.sortBy = String(sortBy);
+    const query = (await queryParser.parse(req)) as ParsedQueryParams;
+    req.dbOptions = query;
+    req.order = query.order;
     next();
   } catch (e) {
-    console.log(e);
-    sendServerErrorMessage(res, e);
+    next(new ApiQueryParamsError());
   }
 };
 

@@ -1,12 +1,22 @@
-import { Request } from "express";
-import { FindOptions } from "sequelize";
+import { Request as ExpressRequest } from "express";
+import { FindOptions, Order } from "sequelize";
+import { UserRole } from "../constants";
+import {
+  RequestBodyAcceptInvite,
+  RequestBodyPostAlbum,
+  RequestBodyPostPost,
+  RequestBodyPutUser,
+} from "./requestBody";
+import {
+  QueryParamsAddress,
+  QueryParamsCitySearch,
+  QueryParamsCountry,
+  QueryParamsLocationSearch,
+} from ".";
 
-export type Decoded = {
-  id: number;
-};
-
-export interface RequestWithUser extends Request {
-  user?: Decoded;
+export interface RequestWithUser extends ExpressRequest {
+  curUserId?: number;
+  userRole?: UserRole;
 }
 
 export type QueryProps = {
@@ -17,12 +27,38 @@ export type QueryProps = {
   sortBy?: string;
 };
 
-export interface RequestWithDBOptions extends Request {
+export interface RequestWithDBOptions extends ExpressRequest {
   dbOptions?: FindOptions;
-  orderBy?: string;
-  sortBy?: string;
+  order?: Order;
+  languageName?: string;
 }
 
+export interface RequestCitySearch extends Request {
+  query: QueryParamsCitySearch;
+}
+export interface RequestLocationSearch extends Request {
+  query: QueryParamsLocationSearch;
+}
+export interface RequestCountry extends Request {
+  query: QueryParamsCountry;
+}
+export interface RequestAddress extends Request {
+  query: QueryParamsAddress;
+}
+export interface RequestPostPost extends Request {
+  body: RequestBodyPostPost;
+}
+export interface RequestPutUser extends Request {
+  body: RequestBodyPutUser;
+}
+export interface RequestAcceptInvite extends Request {
+  body: RequestBodyAcceptInvite;
+}
+export interface RequestPostAlbum extends Request {
+  body: RequestBodyPostAlbum;
+}
+
+export interface Request extends RequestWithDBOptions, RequestWithUser {}
 export type HttpResponseData = {
   body: object;
   status?: number;
