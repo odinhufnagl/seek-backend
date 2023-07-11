@@ -10,6 +10,7 @@ class Answer extends Model {
   public text!: string;
   public locationId?: number;
   public areaId!: number;
+  public isPrivate!: boolean;
 
   static _init(sequelize: Sequelize): void {
     Answer.init(
@@ -17,6 +18,11 @@ class Answer extends Model {
         text: {
           type: DataTypes.STRING,
           allowNull: true,
+        },
+        isPrivate: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
         },
       },
       {

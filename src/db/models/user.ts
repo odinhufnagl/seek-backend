@@ -1,13 +1,17 @@
 import { DataTypes } from "@sequelize/core";
 import { HasManyGetAssociationsMixin, Model, Sequelize } from "sequelize";
-import { DBConstants } from "../../constants";
+import { DBConstants, FIRST_TIME_ZONE } from "../../constants";
 import Answer from "./answer";
 import Chat from "./chat";
 import File from "./file";
+import Language from "./language";
+import Location from "./location";
 import Message from "./message";
+import NotificationToken from "./notificationToken";
 import Question from "./question";
 import ReadMessage from "./readMessage";
 import UserChat from "./userChat";
+import UserQuestion from "./userQuestion";
 
 class User extends Model {
   public id!: number;
@@ -21,6 +25,12 @@ class User extends Model {
   public snapchatName?: string;
   public isActive!: boolean;
   public lastActive!: Date;
+  public timeZone!: string;
+  public currentLocation?: Location;
+  public location?: Location;
+  public notificationTokens!: NotificationToken[];
+  public language!: Language;
+  public languageName!: string;
   public getChats!: HasManyGetAssociationsMixin<Chat>;
 
   public static fields = DBConstants.fields.user;
@@ -75,6 +85,15 @@ class User extends Model {
           type: DataTypes.DATE,
           defaultValue: Sequelize.fn("now"),
         },
+        timeZone: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          defaultValue: FIRST_TIME_ZONE,
+        },
+        languageName: {
+          type: DataTypes.STRING,
+          defaultValue: "en",
+        },
       },
       {
         modelName: "user",
@@ -86,13 +105,20 @@ class User extends Model {
       }
     );
   }
+
   static associate() {
     User.belongsTo(File, {
       as: this.fields.PROFILE_IMAGE,
     });
     User.belongsToMany(Chat, { through: UserChat });
     User.belongsToMany(Message, { through: ReadMessage });
-    User.belongsToMany(Question, { through: Answer });
+    User.belongsToMany(Question, { through: UserQuestion });
+    User.belongsToMany(Question, { through: Answer, as: this.fields.ANSWERS });
+    User.belongsTo(Location, { as: this.fields.CURRENT_LOCATION });
+    User.belongsTo(Location);
+    User.hasMany(Answer);
+    User.hasMany(NotificationToken);
+    User.belongsTo(Language);
   }
 }
 

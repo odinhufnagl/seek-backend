@@ -1,8 +1,17 @@
+import { FindOptions } from "sequelize";
+import { File } from "../db/models";
 import DBConstants from "./db";
-
 const defaultDBOptions = {
   user: {
-    get: DBConstants.defaultOptions.user.find,
+    get: () =>
+      ({
+        include: [
+          {
+            model: File,
+            as: DBConstants.fields.user.PROFILE_IMAGE,
+          },
+        ],
+      } as FindOptions),
   },
 };
 

@@ -73,8 +73,8 @@ export class BaseController<M, M2 = {}> {
       const id = Number(req.params[idParam]);
       const r = await dbUpdate(
         this.model,
-        id,
-        req.body
+        req.body,
+        { where: { id } }
         /* afterQueryParamsDBOptions
           ? { ...req.dbOptions, ...options }
           : { ...options, ...req.dbOptions }*/

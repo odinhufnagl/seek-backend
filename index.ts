@@ -2,14 +2,15 @@ require("dotenv").config();
 import bodyParser from "body-parser";
 import express from "express";
 import * as admin from "firebase-admin";
+import { FIRST_TIME_ZONE } from "./src/constants";
+import { initCronJobs } from "./src/cronJobs";
 import {
-  Chat,
   Country,
   CountryArea,
   FileType,
-  Question,
+  Language,
+  NotificationToken,
   User,
-  UserChat,
   sequelize,
 } from "./src/db/models/index";
 import { errorHandler } from "./src/middleware";
@@ -57,30 +58,29 @@ sequelize.sync({ force: true }).then(async () => {
     { countryId: 1 },
     { countryId: 2 },
   ] as CountryArea[]);
-  const user = await dbCreate(User, {
-    email: "odin.hufnagl@gmail.com",
-    name: "Odin Hufnagl",
-    password: "M1lan2012",
-  } as User);
+  const languages = await dbBulkCreate(Language, [
+    { name: "en" },
+    { name: "se" },
+  ]);
+  const user = await dbCreate(
+    User,
+    {
+      email: "odin.hufnagl@gmail.com",
+      name: "Odin Hufnagl",
+      password: "M1lan2012",
+      timeZone: FIRST_TIME_ZONE,
+      notificationTokens: [{ name: "huhuhu" }, { name: "huhu" }],
+    } as User,
+    { include: [{ model: NotificationToken }] }
+  );
   const user2 = await dbCreate(User, {
     email: "odin.hufnffffagl@gmail.com",
     name: "Odin Hufnagl",
     password: "M1lan2012",
+    timeZone: FIRST_TIME_ZONE,
   } as User);
-  const question = await dbCreate(Question, {
-    title: "What is your favourite day?",
-  } as Question);
-  const chat = await dbCreate(Chat, { questionId: question.id } as Chat);
-  const userChat = await dbCreate(UserChat, {
-    userId: user.id,
-    chatId: chat.id,
-    isInformed: false,
-  } as UserChat);
-  const userChat2 = await dbCreate(UserChat, {
-    userId: user2.id,
-    chatId: chat.id,
-    isInformed: true,
-  } as UserChat);
+
   initApp();
+  initCronJobs();
   // initSocket();
 });

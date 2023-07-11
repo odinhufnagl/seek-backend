@@ -1,16 +1,15 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import Chat from "./chat";
+import Question from "./question";
 import User from "./user";
 
-class UserChat extends Model {
+class UserQuestion extends Model {
   public userId!: number;
-  public chatId!: number;
-  public chat!: Chat;
+  public questionId!: number;
   public isInformed!: boolean;
   public isInvited!: boolean;
 
   static _init(sequelize: Sequelize): void {
-    UserChat.init(
+    UserQuestion.init(
       {
         isInformed: {
           type: DataTypes.BOOLEAN,
@@ -24,16 +23,16 @@ class UserChat extends Model {
         },
       },
       {
-        modelName: "userChat",
+        modelName: "userQuestion",
         timestamps: true,
         sequelize,
       }
     );
   }
   static associate() {
-    UserChat.belongsTo(Chat);
-    UserChat.belongsTo(User);
+    UserQuestion.belongsTo(Question);
+    UserQuestion.belongsTo(User);
   }
 }
 
-export default UserChat;
+export default UserQuestion;

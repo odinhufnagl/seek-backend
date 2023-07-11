@@ -4,12 +4,15 @@ import { DBConstants } from "../../constants";
 import Answer from "./answer";
 import File from "./file";
 import User from "./user";
+import UserQuestion from "./userQuestion";
 
 class Question extends Model {
   public id!: number;
   public title!: string;
   public coverImage?: File;
   public coverImageId?: number;
+  public isFinished!: boolean;
+  public timeToStart!: string;
 
   static _init(sequelize: Sequelize): void {
     Question.init(
@@ -20,6 +23,15 @@ class Question extends Model {
           primaryKey: true,
         },
         title: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        isFinished: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
+        timeToStart: {
           type: DataTypes.STRING,
           allowNull: false,
         },
@@ -35,7 +47,11 @@ class Question extends Model {
     Question.belongsTo(File, {
       as: DBConstants.fields.question.COVER_IMAGE,
     });
-    Question.belongsToMany(User, { through: Answer });
+    Question.belongsToMany(User, {
+      through: Answer,
+      as: DBConstants.fields.question.ANSWERS,
+    });
+    Question.belongsToMany(User, { through: UserQuestion });
     Question.hasMany(Answer);
   }
 }

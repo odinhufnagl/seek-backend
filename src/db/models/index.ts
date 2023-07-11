@@ -8,13 +8,17 @@ import Country from "./country";
 import CountryArea from "./countryArea";
 import File from "./file";
 import FileType from "./fileType";
+import Language from "./language";
 import Location from "./location";
 import Message from "./message";
+import NotificationToken from "./notificationToken";
 import Question from "./question";
 import RadiusArea from "./radiusArea";
 import ReadMessage from "./readMessage";
+import TimeZone from "./timeZone";
 import User from "./user";
 import UserChat from "./userChat";
+import UserQuestion from "./userQuestion";
 
 require("dotenv").config();
 
@@ -56,6 +60,10 @@ const models = {
   Chat,
   Answer,
   Question,
+  TimeZone,
+  UserQuestion,
+  NotificationToken,
+  Language,
 };
 
 Object.keys(models).forEach((key, i) => {
@@ -88,4 +96,8 @@ export {
   Chat,
   Answer,
   Question,
+  TimeZone,
+  UserQuestion,
+  NotificationToken,
+  Language,
 };

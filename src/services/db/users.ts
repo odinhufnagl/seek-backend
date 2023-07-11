@@ -50,6 +50,9 @@ export const updateUser = async (
   toUpdate: User,
   options?: UpdateOptions
 ): Promise<[affectedCount: number, affectedRows?: User[]] | undefined> => {
-  const res = await dbUpdate(models.User, userId, toUpdate, options);
+  const res = await dbUpdate(models.User, toUpdate, {
+    ...options,
+    where: { id: userId },
+  });
   return res;
 };

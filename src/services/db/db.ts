@@ -1,17 +1,15 @@
 import {
-  Model,
-  FindOptions,
-  ModelStatic,
-  WhereAttributeHashValue,
   Attributes,
   BulkCreateOptions,
-  Options,
   CreateOptions,
+  DestroyOptions,
+  FindOptions,
+  Model,
+  ModelStatic,
   UpdateOptions,
-  Sequelize,
+  WhereAttributeHashValue,
 } from "sequelize";
 import { DatabaseError } from "../../classes";
-import { sequelize } from "../../db/models";
 
 export const dbBulkFindOrCreate = async <M extends Model>(
   model: ModelStatic<M>,
@@ -41,6 +39,17 @@ export const dbFindOne = async <M extends Model>(
   try {
     const res = await model.findOne(options);
     return res;
+  } catch (e) {
+    throw DatabaseError.fromSequelizeError(e as Error);
+  }
+};
+export const dbDelete = async <M extends Model>(
+  model: ModelStatic<M>,
+  options?: DestroyOptions
+): Promise<boolean | null> => {
+  try {
+    const res = await model.destroy(options);
+    return true;
   } catch (e) {
     throw DatabaseError.fromSequelizeError(e as Error);
   }
@@ -88,6 +97,19 @@ export const dbCreate = async <M extends Model>(
 
 export const dbUpdate = async <M extends Model>(
   model: ModelStatic<M>,
+  toUpdate: Partial<M>,
+  options: UpdateOptions
+): Promise<[affectedCount: number, affectedRows?: M[]]> => {
+  try {
+    const res = await model.update(toUpdate, options);
+    return res;
+  } catch (e) {
+    throw DatabaseError.fromSequelizeError(e as Error);
+  }
+};
+
+export const dbBulkUpdate = async <M extends Model>(
+  model: ModelStatic<M>,
   id: WhereAttributeHashValue<Attributes<M>[string]> | undefined,
   toUpdate: Model,
   options?: UpdateOptions
@@ -105,7 +127,7 @@ export const dbUpdate = async <M extends Model>(
 
 export const dbBulkCreate = async <M extends Model>(
   model: ModelStatic<M>,
-  values: M[],
+  values: Partial<M>[],
   options?: BulkCreateOptions
 ): Promise<M[]> => {
   try {
