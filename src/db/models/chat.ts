@@ -8,7 +8,10 @@ import UserChat from "./userChat";
 class Chat extends Model {
   public id!: number;
   public questionId!: number;
+  public question!: Question;
   public messages?: Message[];
+  public userChats!: UserChat[];
+  public users!: User[];
 
   static _init(sequelize: Sequelize): void {
     Chat.init(

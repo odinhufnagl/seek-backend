@@ -10,5 +10,10 @@ router.get(
   [parseQueryParamsToDBOptions],
   asyncWrapper(controller.getChats)
 );
+router.get(
+  "/new",
+  [parseQueryParamsToDBOptions],
+  asyncWrapper(controller.getNewChat)
+);
 
 export default router;

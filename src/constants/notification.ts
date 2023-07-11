@@ -1,11 +1,14 @@
 import {
-  DefaultNotificationProps,
-  Notification,
-  NotificationContent,
-  NotificationData,
-  NotificationType,
+  DefaultNotificationDailyQuestionProps,
   DefaultNotificationIsTypingProps,
+  DefaultNotificationNewChatProps,
   DefaultNotificationNewMessageProps,
+  Notification,
+  NotificationDailyQuestion,
+  NotificationIsTyping,
+  NotificationMessage,
+  NotificationNewChat,
+  NotificationUserMessage,
 } from "../types";
 import { ServerLanguage } from "../types/serverLanguages";
 import { translations } from "./translations";
@@ -22,31 +25,40 @@ type IsTypingContentProps = {
 type DailyQuestionContentProps = {
   questionText: string;
 };
+type NewChatContentProps = {
+  userName: string;
+  questionText: string;
+};
 
 const NotificationContent = (language: ServerLanguage) =>
   ({
     chatMessage: ({
       userName,
       message,
-    }: NewMessageContentProps): NotificationContent => ({
+    }: NewMessageContentProps): NotificationMessage => ({
       title: translations(userName)[language].notification.chatMessage.title,
       body: message,
     }),
-    isTyping: ({ userName }: IsTypingContentProps): NotificationContent => ({
+    newChat: ({
+      userName,
+      questionText,
+    }: NewChatContentProps): NotificationMessage => ({
+      title: translations(userName)[language].notification.chatMessage.title,
+      body: questionText,
+    }),
+    isTyping: ({ userName }: IsTypingContentProps): NotificationMessage => ({
       title: translations(userName)[language].notification.isTyping.title,
       body: "wihoo",
     }),
     dailyQuestion: ({
       questionText,
-    }: DailyQuestionContentProps): NotificationContent => ({
+    }: DailyQuestionContentProps): NotificationMessage => ({
       title: translations()[language].notification.dailyQuestion.title,
       body: questionText,
     }),
   } as const);
 
-const convertValuesToStrings = (
-  object: DefaultNotificationProps
-): NotificationData => {
+const convertValuesToStrings = (object: Object): Object => {
   const json = JSON.stringify(object);
   const withStrings = JSON.parse(json, (key, val) =>
     typeof val !== "object" && val !== null ? String(val) : val
@@ -57,50 +69,82 @@ const convertValuesToStrings = (
 class NotificationConstants {
   public static defaultNotificationsContent = NotificationContent;
   public static defaultNotifications = {
+    newChat: ({
+      userName,
+      chatId,
+      questionText,
+      language,
+    }: DefaultNotificationNewChatProps): NotificationNewChat => ({
+      payLoad: {
+        data: {
+          chatId: String(chatId),
+          type: "message",
+        },
+        notification: {
+          ...this.defaultNotificationsContent(language).newChat({
+            userName,
+            questionText,
+          }),
+        },
+      },
+    }),
     message: ({
       message,
       userName,
       userId,
       chatId,
-      token,
       language,
-    }: DefaultNotificationNewMessageProps): Notification => ({
-      token,
-      notification: this.defaultNotificationsContent(language).chatMessage({
-        userName,
-        message,
-      }),
-      data: {
-        ...convertValuesToStrings({
-          userId,
-          chatId,
+    }: DefaultNotificationNewMessageProps): NotificationUserMessage => ({
+      payLoad: {
+        data: {
+          chatId: String(chatId),
+          userId: String(userId),
           message,
-        } as DefaultNotificationNewMessageProps),
-        type: "message",
+          type: "message",
+        },
+        notification: {
+          ...this.defaultNotificationsContent(language).chatMessage({
+            userName,
+            message,
+          }),
+        },
       },
     }),
     typing: ({
       userId,
       userName,
       chatId,
-      token,
+      isTyping,
       language,
-    }: DefaultNotificationIsTypingProps): Notification => ({
-      token,
-      notification: this.defaultNotificationsContent(language).isTyping({
-        userName,
-      }),
-      data: {
-        ...convertValuesToStrings({
-          userId,
-          chatId,
-        } as DefaultNotificationIsTypingProps),
-        type: "typing",
-        isTyping: "true",
+    }: DefaultNotificationIsTypingProps): NotificationIsTyping => ({
+      payLoad: {
+        data: {
+          userId: String(userId),
+          chatId: String(chatId),
+          isTyping: String(isTyping),
+          type: "typing",
+        },
+        notification: {
+          ...this.defaultNotificationsContent(language).isTyping({
+            userName,
+          }),
+        },
       },
     }),
     isActive: () => ({} as Notification),
-    dailyQuestion: () => ({} as Notification),
+    dailyQuestion: ({
+      language,
+      questionText,
+    }: DefaultNotificationDailyQuestionProps): NotificationDailyQuestion => ({
+      payLoad: {
+        data: { type: "dailyQuestion" },
+        notification: {
+          ...this.defaultNotificationsContent(language).dailyQuestion({
+            questionText,
+          }),
+        },
+      },
+    }),
   };
 }
 

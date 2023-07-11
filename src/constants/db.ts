@@ -1,6 +1,3 @@
-import { FindOptions } from "sequelize";
-import { File } from "../db/models";
-
 const DBPrimaryKeys = {
   fileType: {
     IMAGE: "image",
@@ -29,14 +26,15 @@ const DBthroughTables = {} as const;
 const DBFields = {
   user: {
     PROFILE_IMAGE: "profileImage",
-    ALBUMS: "albums",
-    ALBUMS_CREATED: "albumsCreated",
+    ANSWERS: "answers",
+    CURRENT_LOCATION: "currentLocation",
   },
   file: {
     TYPE: "type",
   },
   question: {
     COVER_IMAGE: "coverImage",
+    ANSWERS: "answers",
   },
   area: {
     SUB_TYPE_ID: "subTypeId",
@@ -44,17 +42,7 @@ const DBFields = {
 } as const;
 
 const DBdefaultOptions = {
-  user: {
-    find: () =>
-      ({
-        include: [
-          {
-            model: File,
-            as: DBFields.user.PROFILE_IMAGE,
-          },
-        ],
-      } as FindOptions),
-  },
+  user: {},
 };
 
 export class DBConstants {

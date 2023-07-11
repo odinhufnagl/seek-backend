@@ -1,9 +1,17 @@
+import { Response } from "express";
 import { Op, literal } from "sequelize";
 import { BaseController } from "../../../../../classes";
 import { DBConstants } from "../../../../../constants";
-import { Chat, File, Message, Question, User } from "../../../../../db/models";
-import { ResponseBodyChat } from "../../../../../types";
-
+import {
+  Chat,
+  File,
+  Message,
+  Question,
+  User,
+  UserChat,
+} from "../../../../../db/models";
+import { dbFindOne } from "../../../../../services";
+import { Request, ResponseBodyChat } from "../../../../../types";
 const controller = new BaseController<User, Chat>(User, "user");
 //TODO: check places where we use SQL and check so there is no injections available
 const getChats = controller.getNtoM(async (user) => {
@@ -52,4 +60,14 @@ const getChats = controller.getNtoM(async (user) => {
   return chats;
 });
 
-export default { getChats };
+const getNewChat = async (req: Request, res: Response): Promise<void> => {
+  const userId = Number(req.params.id);
+  const userChat = await dbFindOne(UserChat, {
+    where: { isInformed: false, isInvited: true, userId },
+    order: ["createdAt", "DESC"],
+    include: [{ model: Chat }],
+  });
+  res.send(userChat?.chat);
+};
+
+export default { getChats, getNewChat };
