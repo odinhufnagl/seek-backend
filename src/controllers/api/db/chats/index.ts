@@ -6,7 +6,10 @@ const controller = new BaseController(Chat, "Chat");
 const getChats = controller.getPlural();
 const getChatByPK = controller.get(() => ({
   include: [
-    { model: Question },
+    {
+      model: Question,
+      include: [{ model: File, as: DBConstants.fields.question.COVER_IMAGE }],
+    },
     {
       model: User,
       include: [{ model: File, as: DBConstants.fields.user.PROFILE_IMAGE }],

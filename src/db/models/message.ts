@@ -7,6 +7,9 @@ import User from "./user";
 class Message extends Model {
   public id!: number;
   public text!: string;
+  public userId!: number;
+  public chatId!: number;
+  public chat?: Chat;
 
   static _init(sequelize: Sequelize): void {
     Message.init(

@@ -67,6 +67,18 @@ export const dbFindAll = async <M extends Model>(
     throw DatabaseError.fromSequelizeError(e as Error);
   }
 };
+export const dbFindAndCountAll = async <M extends Model>(
+  model: ModelStatic<M>,
+  options?: FindOptions
+): Promise<{ rows: M[]; count: number }> => {
+  try {
+    console.log(options);
+    const res = await model.findAndCountAll(options);
+    return res;
+  } catch (e) {
+    throw DatabaseError.fromSequelizeError(e as Error);
+  }
+};
 
 export const dbFindByPK = async <M extends Model>(
   model: ModelStatic<M>,

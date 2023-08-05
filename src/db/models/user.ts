@@ -24,7 +24,7 @@ class User extends Model {
   public instagramName?: string;
   public snapchatName?: string;
   public isActive!: boolean;
-  public lastActive!: Date;
+  public lastActive!: string;
   public timeZone!: string;
   public currentLocation?: Location;
   public location?: Location;

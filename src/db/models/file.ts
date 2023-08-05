@@ -6,7 +6,7 @@ import FileType from "./fileType";
 class File extends Model {
   public id!: number;
   public name?: string;
-  public location!: string;
+  public url!: string;
   public type!: FileType;
   static _init(sequelize: Sequelize) {
     File.init(

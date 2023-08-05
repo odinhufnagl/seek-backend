@@ -12,6 +12,7 @@ class Chat extends Model {
   public messages?: Message[];
   public userChats!: UserChat[];
   public users!: User[];
+  public timeToStart!: string;
 
   static _init(sequelize: Sequelize): void {
     Chat.init(
@@ -20,6 +21,10 @@ class Chat extends Model {
           type: DataTypes.INTEGER,
           autoIncrement: true,
           primaryKey: true,
+        },
+        timeToStart: {
+          type: DataTypes.STRING,
+          allowNull: false,
         },
       },
       {
