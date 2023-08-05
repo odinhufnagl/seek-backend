@@ -5,6 +5,7 @@ export * from "./db/users";
 export * from "./email";
 export * from "./fileUpload";
 export * from "./maps";
+export * from "./messages";
 export * from "./notification";
 export * from "./pairing";
 export * from "./serverLanguages";

@@ -11,7 +11,7 @@ import { ResponseConstants } from "../constants";
 import {
   dbBulkCreate,
   dbCreate,
-  dbFindAll,
+  dbFindAndCountAll,
   dbFindByPK,
   dbUpdate,
 } from "../services/db/db";
@@ -87,10 +87,10 @@ export class BaseController<M, M2 = {}> {
   getPlural =
     (
       options?: (req: RequestWithDBOptions) => FindOptions,
-      afterQueryParamsDBOptions?: boolean
+      afterQueryParamsDBOptions = false
     ) =>
     async (req: RequestWithDBOptions, res: Response, next: NextFunction) => {
-      const r = await dbFindAll(
+      const r = await dbFindAndCountAll(
         this.model,
         afterQueryParamsDBOptions
           ? { ...req.dbOptions, ...options?.(req) }
@@ -101,11 +101,12 @@ export class BaseController<M, M2 = {}> {
   get =
     (
       options?: (req: RequestWithDBOptions) => FindOptions,
-      afterQueryParamsDBOptions?: boolean,
+      afterQueryParamsDBOptions = false,
       idParam = this.defaultIdParam
     ) =>
     async (req: RequestWithDBOptions, res: Response, next: NextFunction) => {
       const id = Number(req.params[idParam]);
+      console.log("dbOptions", req.dbOptions);
       const r = await dbFindByPK(
         this.model,
         id,
@@ -130,7 +131,7 @@ export class BaseController<M, M2 = {}> {
       res.send(ResponseConstants.defaultResponses.success());
     };
   getNtoM =
-    (get: (dbObject: M) => Promise<M2[]>, idParam = this.defaultIdParam) =>
+    (get: (dbObject: M) => Promise<any>, idParam = this.defaultIdParam) =>
     async (req: RequestWithDBOptions, res: Response, next: NextFunction) => {
       const id = Number(req.params[idParam]);
       const dbObject = await dbFindByPK(this.model, id);
@@ -146,7 +147,7 @@ export class BaseController<M, M2 = {}> {
       const id = Number(req.params[idParam]);
       const body = req.body as RequestBodyIdList;
       const dbObject = await dbFindByPK(this.model, id);
-      console.log(dbObject, body.ids);
+
       body.ids && (await add(dbObject, body.ids));
       res.send(ResponseConstants.defaultResponses.success());
     };

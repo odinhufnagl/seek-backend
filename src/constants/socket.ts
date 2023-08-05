@@ -1,46 +1,44 @@
 import {
-  SocketServerMessageData,
-  SocketMessageServer,
-  SocketMessageType,
+  DefaultSocketIsActiveProps,
+  DefaultSocketIsTypingProps,
+  DefaultSocketNewMessageProps,
+  SocketServerMessageIsActive,
+  SocketServerMessageIsTyping,
+  SocketServerMessageUserMessage,
 } from "../types";
-
-type ChatMessageProps = {
-  message: string;
-  chatId: number;
-  userId: number;
-  senderId: number;
-};
-type IsTypingProps = {
-  isTyping: boolean;
-  chatId: number;
-  userId: number;
-  senderId: number;
-};
-type IsActiveProps = {
-  isActive: boolean;
-  userId: number;
-  senderId: number;
-};
 
 class SocketConstants {
   public static defaultMessages = {
     chatMessage: ({
-      senderId,
-      ...props
-    }: ChatMessageProps): SocketMessageServer => ({
-      senderId,
+      chatId,
+      message,
+      userId,
+      messageId,
+    }: DefaultSocketNewMessageProps): SocketServerMessageUserMessage => ({
       type: "message",
-      data: props as SocketServerMessageData,
+      data: {
+        chatId,
+        message,
+        type: "message",
+        messageId,
+        userId,
+      },
     }),
-    isTyping: ({ senderId, ...props }: IsTypingProps): SocketMessageServer => ({
+    isTyping: ({
+      chatId,
+      isTyping,
+      userId,
+    }: DefaultSocketIsTypingProps): SocketServerMessageIsTyping => ({
       type: "typing",
-      senderId,
-      data: props,
+
+      data: { chatId, isTyping, type: "typing", userId },
     }),
-    isActive: ({ senderId, ...props }: IsActiveProps): SocketMessageServer => ({
-      senderId,
+    isActive: ({
+      isActive,
+      userId,
+    }: DefaultSocketIsActiveProps): SocketServerMessageIsActive => ({
       type: "isActive",
-      data: props,
+      data: { isActive, type: "isActive", userId },
     }),
   };
 }

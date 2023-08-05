@@ -16,7 +16,7 @@ import {
 import { errorHandler } from "./src/middleware";
 import apiRoutes from "./src/routes/api/index";
 import { dbBulkCreate, dbCreate } from "./src/services";
-//import { initSocket } from "./src/socket";
+import { SocketServer } from "./src/socket/index";
 
 const serviceAccount = require("./serviceAccountKey.json");
 
@@ -28,6 +28,7 @@ admin.initializeApp({
 const bucket = admin.storage().bucket();
 
 export { bucket };
+export { socket };
 
 var app = express();
 
@@ -44,6 +45,8 @@ const initApp = (): void => {
     console.log(`listening on port ${process.env.PORT}`)
   );
 };
+
+const socket = new SocketServer(7071);
 
 sequelize.sync({ force: true }).then(async () => {
   const fileTypes = await dbBulkCreate(FileType, [
@@ -82,5 +85,4 @@ sequelize.sync({ force: true }).then(async () => {
 
   initApp();
   initCronJobs();
-  // initSocket();
 });

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { Op, literal } from "sequelize";
+import { literal } from "sequelize";
 import { BaseController } from "../../../../../classes";
 import { DBConstants } from "../../../../../constants";
 import {
@@ -10,16 +10,16 @@ import {
   User,
   UserChat,
 } from "../../../../../db/models";
-import { dbFindOne } from "../../../../../services";
-import { Request, ResponseBodyChat } from "../../../../../types";
+import { dbFindAndCountAll, dbFindOne } from "../../../../../services";
+import { Request, ResponseBodyChats } from "../../../../../types";
 const controller = new BaseController<User, Chat>(User, "user");
 //TODO: check places where we use SQL and check so there is no injections available
 const getChats = controller.getNtoM(async (user) => {
-  const chats: ResponseBodyChat = await user.getChats({
+  const res: ResponseBodyChats = await dbFindAndCountAll(Chat, {
     replacements: { userId: user.id },
     attributes: {
       include: [
-        [
+        /*[
           literal(`(
                     SELECT COUNT(*)
                     FROM messages AS message
@@ -27,13 +27,29 @@ const getChats = controller.getNtoM(async (user) => {
                     WHERE message."chatId" = chat.id AND message."userId" != :userId AND (readmessage IS NULL)
                 )`),
           "unreadMessagesCount",
+        ],*/
+        [
+          literal(`(
+            SELECT COUNT(*)
+            FROM messages AS message
+            WHERE message."chatId" = "chat"."id" AND message."userId" != :userId
+            AND message."createdAt" > (
+              SELECT "userChat"."lastRead"
+              FROM "userChats" AS "userChat"
+              WHERE "userChat"."userId" = :userId
+              AND "userChat"."chatId" = "chat"."id"
+            )
+          )`),
+          "unreadMessagesCount",
         ],
       ],
     },
+
     include: [
+      { model: UserChat, where: { userId: user.id } },
       {
         model: User,
-        where: { id: { [Op.not]: user.id } },
+        // where: { id: { [Op.not]: user.id } },
         include: [{ model: File, as: DBConstants.fields.user.PROFILE_IMAGE }],
       },
       { model: Question },
@@ -47,7 +63,7 @@ const getChats = controller.getNtoM(async (user) => {
       },
     ],
   });
-
+  const chats = res.rows;
   //TODO: do this in the query, but here we manually update the fieldName to lastMessage. Should be able to be done with a JOIN in some way
   chats.map((chat, i) => {
     chats[i].setDataValue(
@@ -57,7 +73,7 @@ const getChats = controller.getNtoM(async (user) => {
 
     chats[i].setDataValue("messages", undefined);
   });
-  return chats;
+  return { count: res.count, rows: chats } as ResponseBodyChats;
 });
 
 const getNewChat = async (req: Request, res: Response): Promise<void> => {

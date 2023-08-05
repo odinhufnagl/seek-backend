@@ -32,6 +32,7 @@ const signIn = async (req: Request, res: Response): Promise<void> => {
   if (!user.password) {
     throw new ApiDatabaseNotFoundError();
   }
+  console.log(password, user?.password);
   var passwordIsValid = compareSync(password, user?.password);
   if (!passwordIsValid) {
     throw new ApiWrongPasswordError();

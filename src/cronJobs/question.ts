@@ -1,7 +1,7 @@
 //TODO: the handling of timeZones right now is just as strings, not that good
 import moment from "moment-timeZone";
-import { DateConstants, FIRST_TIME_ZONE } from "../constants";
-import { Answer, Chat, Question, User, UserChat } from "../db/models";
+import { DBConstants, DateConstants, FIRST_TIME_ZONE } from "../constants";
+import { Answer, Chat, File, Question, User, UserChat } from "../db/models";
 import {
   dbBulkCreate,
   dbCreate,
@@ -22,14 +22,19 @@ const HOURS_UNTIL_QUESTION_FINISHED = 27;
 
 export const cronJobCreateQuestion = async () => {
   const { title, coverImage } = generateQuestionContent();
+  console.log("coverImage", coverImage);
   const timeToStart = moment()
     .tz(FIRST_TIME_ZONE)
     .format(DateConstants.formats.DATE_WITHOUT_TIMEZONE);
-  const question = await dbCreate(Question, {
-    title,
-    coverImage,
-    timeToStart,
-  } as Question);
+  const question = await dbCreate(
+    Question,
+    {
+      title,
+      coverImage: coverImage as File,
+      timeToStart,
+    } as Question,
+    { include: [{ model: File, as: DBConstants.fields.question.COVER_IMAGE }] }
+  );
   const dateToSendQuestionInvites = moment()
     .tz(FIRST_TIME_ZONE)
     .add(SECONDS_UNTIL_QUESTION_INVITATION, "seconds");
@@ -69,11 +74,12 @@ const userChatsFromUserPairs = (
 
 const setUpChatsForUserPairs = async (
   userPairs: (User | undefined)[][],
+  time: string,
   questionId: number
 ): Promise<UserChat[]> => {
   const chats = await dbBulkCreate(
     Chat,
-    userPairs.map(() => ({ questionId: questionId }))
+    userPairs.map(() => ({ questionId: questionId, timeToStart: time }))
   );
   const userChats = await dbBulkCreate(
     UserChat,
@@ -93,7 +99,14 @@ export const cronJobQuestionFinished = async (question: Question) => {
     include: [{ model: Answer, where: { questionId: question.id } }],
   });
   const userPairs = generateUserPairs(usersHasAnswered);
-  const newUserChats = await setUpChatsForUserPairs(userPairs, question.id);
+  const timeToStart = moment()
+    .tz(FIRST_TIME_ZONE)
+    .format(DateConstants.formats.DATE_WITHOUT_TIMEZONE);
+  const newUserChats = await setUpChatsForUserPairs(
+    userPairs,
+    timeToStart,
+    question.id
+  );
   console.log("newUserChats", newUserChats);
 
   //TODO: 5 is just for testing here
