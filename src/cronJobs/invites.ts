@@ -47,7 +47,7 @@ export const inviteToQuestion = async (users: User[], question: Question) => {
     users.map((u) => u.id),
     (user) =>
       NotificationConstants.defaultNotifications.dailyQuestion({
-        language: serverLanguageFromDBLanguage(user.language),
+        language: "en",
         questionText: question.title,
       })
   );
@@ -87,6 +87,7 @@ export const inviteToQuestionByTimezone = async (
   const usersInTimeZone = await dbFindAll(User, {
     where: { timeZone: timeZoneName },
   });
+  console.log("usersInTimezone", usersInTimeZone);
   await inviteToQuestion(usersInTimeZone, question);
 };
 export const scheduleCronJobsInviteToChat = (

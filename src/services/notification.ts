@@ -6,13 +6,17 @@ import { Notification } from "../types";
 import { dbFindAll } from "./db/db";
 
 const sendNotification = async (
-  tokens: string[] | string,
+  tokens: string[],
   notification: Notification
 ): Promise<boolean> => {
   try {
-    const res = await admin
-      .messaging()
-      .sendToDevice(tokens, notification.payLoad, notification.options);
+    console.log("hello world");
+    const res = await admin.messaging().sendEachForMulticast({
+      tokens,
+      notification: notification.payLoad.notification,
+      data: notification.payLoad.data,
+    });
+    console.log("res", res.responses[0].error);
     return Boolean(res);
   } catch (e) {
     console.log(e);
@@ -58,7 +62,9 @@ const sendNotificationToUsers = async (
   }
   //TODO: make this more effective, like grouping the ones with same language etc...
   for (const user of users) {
+    console.log("user", user);
     const tokens = user.notificationTokens.map((t) => t.name);
+    console.log("tokens", tokens);
     sendNotification(tokens, notification(user));
   }
   return true;
@@ -66,7 +72,7 @@ const sendNotificationToUsers = async (
 
 export {
   sendNotification,
+  sendNotificationToUsers,
   subscribeToTopic,
   unsubscribeFromTopic,
-  sendNotificationToUsers,
 };

@@ -9,7 +9,7 @@ export const translations = (params?: any) => ({
     },
     notification: {
       chatMessage: {
-        title: `New message from ${params?.userName}`,
+        title: `${params?.userName}`,
       },
       isTyping: {
         title: `${params?.userName} is typing`,
@@ -29,7 +29,7 @@ export const translations = (params?: any) => ({
     },
     notification: {
       chatMessage: {
-        title: `New message from ${params?.userName}`,
+        title: `${params?.userName}`,
       },
       isTyping: {
         title: `${params?.userName} is typing`,
