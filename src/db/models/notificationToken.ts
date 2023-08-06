@@ -2,6 +2,7 @@ import { DataTypes } from "@sequelize/core";
 import { Model, Sequelize } from "sequelize";
 import User from "./user";
 
+//TODO: maybe make this many-to-many with user so it is not tied to user
 class NotificationToken extends Model {
   public name!: string;
   public userId!: number;

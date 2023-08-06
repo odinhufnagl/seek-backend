@@ -36,18 +36,20 @@ const NotificationContent = (language: ServerLanguage) =>
       userName,
       message,
     }: NewMessageContentProps): NotificationMessage => ({
-      title: translations(userName)[language].notification.chatMessage.title,
+      title: translations({ userName })[language].notification.chatMessage
+        .title,
       body: message,
     }),
     newChat: ({
       userName,
       questionText,
     }: NewChatContentProps): NotificationMessage => ({
-      title: translations(userName)[language].notification.chatMessage.title,
+      title: translations({ userName })[language].notification.chatMessage
+        .title,
       body: questionText,
     }),
     isTyping: ({ userName }: IsTypingContentProps): NotificationMessage => ({
-      title: translations(userName)[language].notification.isTyping.title,
+      title: translations({ userName })[language].notification.isTyping.title,
       body: "wihoo",
     }),
     dailyQuestion: ({

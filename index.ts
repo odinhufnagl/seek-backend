@@ -27,8 +27,7 @@ admin.initializeApp({
 
 const bucket = admin.storage().bucket();
 
-export { bucket };
-export { socket };
+export { bucket, socket };
 
 var app = express();
 
@@ -76,12 +75,16 @@ sequelize.sync({ force: true }).then(async () => {
     } as User,
     { include: [{ model: NotificationToken }] }
   );
-  const user2 = await dbCreate(User, {
-    email: "odin.hufnffffagl@gmail.com",
-    name: "Odin Hufnagl",
-    password: "M1lan2012",
-    timeZone: FIRST_TIME_ZONE,
-  } as User);
+  const user2 = await dbCreate(
+    User,
+    {
+      email: "odin.hufnffffagl@gmail.com",
+      name: "Odin Hufnagl",
+      password: "M1lan2012",
+      timeZone: FIRST_TIME_ZONE,
+    } as User,
+    { include: [{ model: NotificationToken }] }
+  );
 
   initApp();
   initCronJobs();

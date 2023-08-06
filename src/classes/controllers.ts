@@ -11,6 +11,7 @@ import { ResponseConstants } from "../constants";
 import {
   dbBulkCreate,
   dbCreate,
+  dbDelete,
   dbFindAndCountAll,
   dbFindByPK,
   dbUpdate,
@@ -82,8 +83,20 @@ export class BaseController<M, M2 = {}> {
       res.send(r);
     };
   delete =
-    (options?: DestroyOptions, afterQueryParamsDBOptions?: boolean) =>
-    async (req: RequestWithDBOptions, res: Response, next: NextFunction) => {};
+    (
+      options?: (req: RequestWithDBOptions) => DestroyOptions,
+      afterQueryParamsDBOptions?: boolean
+    ) =>
+    async (req: RequestWithDBOptions, res: Response, next: NextFunction) => {
+      console.log("dbOpp", req.dbOptions);
+      const r = await dbDelete(
+        this.model,
+        afterQueryParamsDBOptions
+          ? { ...req.dbOptions, ...options?.(req) }
+          : { ...options?.(req), ...req.dbOptions }
+      );
+      res.send(r);
+    };
   getPlural =
     (
       options?: (req: RequestWithDBOptions) => FindOptions,
