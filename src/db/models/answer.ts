@@ -5,6 +5,7 @@ import Question from "./question";
 import User from "./user";
 
 class Answer extends Model {
+  public id!: number;
   public questionId!: number;
   public userId!: number;
   public text!: string;
@@ -15,6 +16,22 @@ class Answer extends Model {
   static _init(sequelize: Sequelize): void {
     Answer.init(
       {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          allowNull: false,
+          autoIncrement: true,
+        },
+        userId: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          allowNull: false,
+        },
+        questionId: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          allowNull: false,
+        },
         text: {
           type: DataTypes.STRING,
           allowNull: true,

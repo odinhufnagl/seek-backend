@@ -53,8 +53,8 @@ sequelize.sync({ force: true }).then(async () => {
     { name: "video" },
   ] as FileType[]);
   const countries = await dbBulkCreate(Country, [
-    { code: "SE-se" },
-    { code: "US-us" },
+    { code: "SE" },
+    { code: "US" },
   ] as Country[]);
   const countryArea = await dbBulkCreate(CountryArea, [
     { countryId: 1 },
