@@ -28,6 +28,7 @@ class User extends Model {
   public timeZone!: string;
   public currentLocation?: Location;
   public location?: Location;
+  public locationId?: number;
   public notificationTokens!: NotificationToken[];
   public language!: Language;
   public languageName!: string;

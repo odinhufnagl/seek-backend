@@ -1,5 +1,5 @@
 import { FindOptions } from "sequelize";
-import { File } from "../db/models";
+import { Coordinate, Country, File, Location } from "../db/models";
 import DBConstants from "./db";
 const defaultDBOptions = {
   user: {
@@ -9,6 +9,11 @@ const defaultDBOptions = {
           {
             model: File,
             as: DBConstants.fields.user.PROFILE_IMAGE,
+          },
+          //TODO: this should be default for location
+          {
+            model: Location,
+            include: [{ model: Country }, { model: Coordinate }],
           },
         ],
       } as FindOptions),

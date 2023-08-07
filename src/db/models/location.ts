@@ -1,11 +1,11 @@
-import { Model, Sequelize } from "sequelize";
 import { DataTypes } from "@sequelize/core";
-import Country from "./country";
-import { findAddressDataByCoordinate } from "../../services/maps";
-import Coordinate from "./coordinate";
+import { Model, Sequelize } from "sequelize";
+import { models } from ".";
 import { ExternalError } from "../../classes";
 import { dbFindOne } from "../../services/db/db";
-import { models } from ".";
+import { findAddressDataByCoordinate } from "../../services/maps";
+import Coordinate from "./coordinate";
+import Country from "./country";
 
 class Location extends Model {
   public id!: number;
@@ -69,11 +69,14 @@ class Location extends Model {
           if (!addressData.country) {
             throw Error();
           }
-          const foundCountryId = (
-            await dbFindOne(models.Country, {
-              where: { code: addressData.country.code },
-            })
-          )?.id;
+          const foundCountryId =
+            //TODO: Maybe do mapping because right now the code used in googleMaps has to be used in the database aswell
+            //should be enough with something like AddressDataCountryCodeToDBCode or something like that and it could probably just be in this model
+            (
+              await dbFindOne(models.Country, {
+                where: { code: addressData.country.code },
+              })
+            )?.id;
           console.log("foundCountry", foundCountryId);
           if (foundCountryId === undefined) {
             //country does not exist error

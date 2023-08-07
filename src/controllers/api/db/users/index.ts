@@ -1,7 +1,13 @@
 import { Response } from "express";
 import { BaseController } from "../../../../classes";
 import ControllersConstants from "../../../../constants/controllers";
-import { File, sequelize, User } from "../../../../db/models";
+import {
+  Coordinate,
+  File,
+  Location,
+  sequelize,
+  User,
+} from "../../../../db/models";
 import { dbCreate } from "../../../../services/db/db";
 import { findUserByPK, updateUser } from "../../../../services/db/users";
 import { RequestPutUser } from "../../../../types";
@@ -20,13 +26,13 @@ const putUser = async (req: RequestPutUser, res: Response): Promise<void> => {
   let toUpdate = req.body as User;
   delete toUpdate["password"];
   const r = await sequelize.transaction(async (t) => {
-    //this can be added when we implement location
-    /*if (body.location) {
+    if (body.location) {
       const createdLocation = await dbCreate(Location, body.location, {
+        include: [{ model: Coordinate }],
         transaction: t,
       });
       toUpdate.locationId = createdLocation.id;
-    }*/
+    }
 
     if (body.profileImage) {
       const profileImage = await dbCreate(File, body.profileImage, {
