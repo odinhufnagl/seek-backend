@@ -6,6 +6,12 @@ export interface QueryParamsCitySearch extends QueryParams {
   search_query?: string;
   type?: LocationSearchType;
 }
+export interface QueryParamsSearch extends QueryParams {
+  search_query?: string;
+  userId: string;
+  limit: string;
+  offset: string;
+}
 export interface QueryParamsLocationSearch extends QueryParams {
   search_query?: string;
   type?: LocationSearchType;

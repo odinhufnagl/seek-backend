@@ -18,6 +18,9 @@ const defaultDBOptions = {
         ],
       } as FindOptions),
   },
+  usersChat: {
+    getDetailed: () => ({}),
+  },
 };
 
 export class ControllersConstants {

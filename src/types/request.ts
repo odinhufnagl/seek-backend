@@ -1,5 +1,12 @@
 import { Request as ExpressRequest } from "express";
 import { FindOptions, Order } from "sequelize";
+import {
+  QueryParamsAddress,
+  QueryParamsCitySearch,
+  QueryParamsCountry,
+  QueryParamsLocationSearch,
+  QueryParamsSearch,
+} from ".";
 import { UserRole } from "../constants";
 import {
   RequestBodyAcceptInvite,
@@ -7,12 +14,6 @@ import {
   RequestBodyPostPost,
   RequestBodyPutUser,
 } from "./requestBody";
-import {
-  QueryParamsAddress,
-  QueryParamsCitySearch,
-  QueryParamsCountry,
-  QueryParamsLocationSearch,
-} from ".";
 
 export interface RequestWithUser extends ExpressRequest {
   curUserId?: number;
@@ -38,6 +39,9 @@ export interface RequestCitySearch extends Request {
 }
 export interface RequestLocationSearch extends Request {
   query: QueryParamsLocationSearch;
+}
+export interface RequestSearch extends Request {
+  query: QueryParamsSearch;
 }
 export interface RequestCountry extends Request {
   query: QueryParamsCountry;
