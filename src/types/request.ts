@@ -10,8 +10,7 @@ import {
 import { UserRole } from "../constants";
 import {
   RequestBodyAcceptInvite,
-  RequestBodyPostAlbum,
-  RequestBodyPostPost,
+  RequestBodyNewChatSeen,
   RequestBodyPutUser,
 } from "./requestBody";
 
@@ -43,23 +42,21 @@ export interface RequestLocationSearch extends Request {
 export interface RequestSearch extends Request {
   query: QueryParamsSearch;
 }
+export interface RequestNewChatSeen extends Request {
+  body: RequestBodyNewChatSeen;
+}
 export interface RequestCountry extends Request {
   query: QueryParamsCountry;
 }
 export interface RequestAddress extends Request {
   query: QueryParamsAddress;
 }
-export interface RequestPostPost extends Request {
-  body: RequestBodyPostPost;
-}
+
 export interface RequestPutUser extends Request {
   body: RequestBodyPutUser;
 }
 export interface RequestAcceptInvite extends Request {
   body: RequestBodyAcceptInvite;
-}
-export interface RequestPostAlbum extends Request {
-  body: RequestBodyPostAlbum;
 }
 
 export interface Request extends RequestWithDBOptions, RequestWithUser {}
