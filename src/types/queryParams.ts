@@ -12,6 +12,10 @@ export interface QueryParamsSearch extends QueryParams {
   limit: string;
   offset: string;
 }
+export interface QueryParamsNewChatSeen extends QueryParams {
+  userId: string;
+  chatId: string;
+}
 export interface QueryParamsLocationSearch extends QueryParams {
   search_query?: string;
   type?: LocationSearchType;
