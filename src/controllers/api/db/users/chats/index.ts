@@ -76,6 +76,7 @@ const getChats = controller.getNtoM(async (user) => {
   return { count: res.count, rows: chats } as ResponseBodyChats;
 });
 
+//move to functions right??
 const getNewChat = async (req: Request, res: Response): Promise<void> => {
   const userId = Number(req.params.id);
   const userChat = await dbFindOne(UserChat, {
