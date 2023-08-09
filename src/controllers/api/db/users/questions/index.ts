@@ -2,8 +2,8 @@ import { Response } from "express";
 import moment from "moment-timeZone";
 import { Op, literal } from "sequelize";
 import { ApiDatabaseNotFoundError } from "../../../../../classes";
-import { DateConstants } from "../../../../../constants";
-import { Question, User } from "../../../../../db/models";
+import { DBConstants, DateConstants } from "../../../../../constants";
+import { File, Question, User } from "../../../../../db/models";
 import { dbFindAll, dbFindByPK } from "../../../../../services";
 import { Request } from "../../../../../types";
 
@@ -24,6 +24,7 @@ const getNewQuestion = async (req: Request, res: Response): Promise<void> => {
       },
       isFinished: false,
     },
+    include: [{ model: File, as: DBConstants.fields.question.COVER_IMAGE }],
 
     order: [["createdAt", "DESC"]],
   });
@@ -37,10 +38,12 @@ const getNewQuestion = async (req: Request, res: Response): Promise<void> => {
         .format(DateConstants.formats.DATE_WITHOUT_TIMEZONE),
       DateConstants.formats.DATE_WITHOUT_TIMEZONE
     );
+    console.log("usersTime", usersTime);
     const questionTime = moment(
       question.timeToStart,
       DateConstants.formats.DATE_WITHOUT_TIMEZONE
     );
+    console.log("questionTime", questionTime);
     if (questionTime.isBefore(usersTime)) {
       res.send(question);
       return;
