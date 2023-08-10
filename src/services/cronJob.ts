@@ -1,5 +1,5 @@
 import { CronCommand, CronJob } from "cron";
-import moment, { Moment } from "moment-timeZone";
+import moment, { Moment } from "moment-timezone";
 import { JobSchedule } from "../types";
 
 type ScheduleJobParams = {

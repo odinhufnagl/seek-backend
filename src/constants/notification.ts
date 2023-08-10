@@ -44,8 +44,7 @@ const NotificationContent = (language: ServerLanguage) =>
       userName,
       questionText,
     }: NewChatContentProps): NotificationMessage => ({
-      title: translations({ userName })[language].notification.chatMessage
-        .title,
+      title: translations({ userName })[language].notification.newChat.title,
       body: questionText,
     }),
     isTyping: ({ userName }: IsTypingContentProps): NotificationMessage => ({
@@ -80,7 +79,7 @@ class NotificationConstants {
       payLoad: {
         data: {
           chatId: String(chatId),
-          type: "message",
+          type: "newChat",
         },
         notification: {
           ...this.defaultNotificationsContent(language).newChat({

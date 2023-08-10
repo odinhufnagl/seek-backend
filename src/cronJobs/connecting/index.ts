@@ -1,7 +1,7 @@
-import { scheduleJob } from "../services";
-import { JobSchedule } from "../types";
+import moment from "moment-timezone";
+import { FIRST_TIME_ZONE } from "../../constants";
+import { scheduleOneJob } from "../../services";
 import { cronJobCreateQuestion } from "./question";
-
 //TODO: the handling of timeZones right now is just as strings, not that good
 const MY_TIME_ZONE = "Europe/Stockholm";
 
@@ -10,19 +10,21 @@ const MY_TIME_ZONE = "Europe/Stockholm";
 //TODO: find a more general way to store cronjobs, would eliminate lots of duplicate code
 
 const initCronJobs = () => {
-  const questionJobSchedule: JobSchedule = {
+  /*const questionJobSchedule: JobSchedule = {
     hour: 14,
     minute: 47,
     second: 0,
     timeZone: MY_TIME_ZONE,
-  };
+  };*/
+  const dateToStartNewQuestion = moment().tz(FIRST_TIME_ZONE).add(1, "minute");
 
-  scheduleJob({
-    jobSchedule: questionJobSchedule,
-    cronJobFunction: cronJobCreateQuestion,
+  scheduleOneJob({
+    timeZone: FIRST_TIME_ZONE,
+    date: dateToStartNewQuestion.toDate(),
+    cronJobFunction: () => cronJobCreateQuestion(),
   });
 
-  cronJobCreateQuestion();
+  // cronJobCreateQuestion();
 };
 
 export { initCronJobs };

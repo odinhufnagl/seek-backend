@@ -1,5 +1,5 @@
 import { Response } from "express";
-import moment from "moment-timeZone";
+import moment from "moment-timezone";
 import { Op, literal } from "sequelize";
 import { ApiDatabaseNotFoundError } from "../../../../../classes";
 import { DBConstants, DateConstants } from "../../../../../constants";

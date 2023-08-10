@@ -1,14 +1,14 @@
 //TODO: the handling of timeZones right now is just as strings, not that good
 import { Op } from "sequelize";
-import { NotificationConstants, TIMEZONES } from "../constants";
-import { Chat, Question, User, UserChat } from "../db/models";
+import { NotificationConstants, TIMEZONES } from "../../constants";
+import { Chat, Question, User, UserChat } from "../../db/models";
 import {
   dbFindAll,
   dbUpdate,
   scheduleJobsOnTimezones,
   sendNotificationToUsers,
   serverLanguageFromDBLanguage,
-} from "../services";
+} from "../../services";
 
 //TODO: create types for the models that doesnt have all the extra stuff, just their values
 //TODO: fix translations with questionText. Dont hardcode language, should be based on users language. Should not send questionText to notification, send translations
@@ -25,7 +25,13 @@ export const inviteToChat = async (userChats: UserChat[]) => {
       },
     }
   );
-  for (const userChat of userChats) {
+  //TODO: bad bad bad! Should restructure it in some way
+  const extendedUserChats = await dbFindAll(UserChat, {
+    where: { id: { [Op.in]: userChats.map((uc) => uc.id) } },
+    include: [{ model: Chat, include: [{ model: User }, { model: Question }] }],
+  });
+
+  for (const userChat of extendedUserChats) {
     const otherUser = userChat.chat.users.find((u) => u.id !== userChat.userId);
     if (!otherUser) {
       continue;
@@ -39,10 +45,23 @@ export const inviteToChat = async (userChats: UserChat[]) => {
       })
     );
   }
-  //TODO: send notification to these users
 };
 
 export const inviteToQuestion = async (users: User[], question: Question) => {
+  sendNotificationToUsers(
+    users.map((u) => u.id),
+    (user) =>
+      NotificationConstants.defaultNotifications.dailyQuestion({
+        language: "en",
+        questionText: question.title,
+      })
+  );
+};
+
+export const inviteAllUsersToQuestion = async (question: Question) => {
+  //send notification to ALL USERS
+  //TODO: bad bad
+  const users = await dbFindAll(User, { attributes: ["id"] });
   sendNotificationToUsers(
     users.map((u) => u.id),
     (user) =>

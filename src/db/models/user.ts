@@ -26,6 +26,7 @@ class User extends Model {
   public isActive!: boolean;
   public lastActive!: string;
   public timeZone!: string;
+  public answers!: Answer[];
   public currentLocation?: Location;
   public location?: Location;
   public locationId?: number;
