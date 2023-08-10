@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import express from "express";
 import * as admin from "firebase-admin";
 import { FIRST_TIME_ZONE } from "./src/constants";
-import { initCronJobs } from "./src/cronJobs";
+import { initCronJobs } from "./src/cronJobs/connecting";
 import {
   Country,
   CountryArea,

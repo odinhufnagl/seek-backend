@@ -17,6 +17,9 @@ export const translations = (params?: any) => ({
       dailyQuestion: {
         title: "Time for your daily question",
       },
+      newChat: {
+        title: "New Connection",
+      },
     },
   },
   en: {
@@ -36,6 +39,9 @@ export const translations = (params?: any) => ({
       },
       dailyQuestion: {
         title: "Time for your daily question",
+      },
+      newChat: {
+        title: "New Connection",
       },
     },
   },
