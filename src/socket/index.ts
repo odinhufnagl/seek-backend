@@ -131,13 +131,13 @@ class SocketServer {
     }
   };
 
-  constructor(port: number) {
+  constructor(server: any) {
     this.socket = new Socket.Server({
-      port,
       verifyClient: (info: any) => this.verifyRequest(info.req),
+      server,
     });
     this.storage = new ClientsStorage();
-    console.log("Socket is listening on", port);
+    console.log("Socket is listening on", server);
 
     this.socket.on("connection", (ws, req) => {
       const userId = this.verifyRequest(req);

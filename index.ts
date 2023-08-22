@@ -2,6 +2,7 @@ require("dotenv").config();
 import bodyParser from "body-parser";
 import express from "express";
 import * as admin from "firebase-admin";
+import { createServer } from "http";
 import { DBConstants } from "./src/constants";
 import { initCronJobs } from "./src/cronJobs/connecting";
 import {
@@ -16,8 +17,7 @@ import {
 import { errorHandler } from "./src/middleware";
 import apiRoutes from "./src/routes/api/index";
 import { dbBulkCreate } from "./src/services";
-import { SocketServer } from "./src/socket/index";
-
+import { SocketServer } from "./src/socket";
 const serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
@@ -38,14 +38,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api", apiRoutes);
 
 app.use(errorHandler);
+let server = createServer();
+server.on("request", app);
+
+const socket = new SocketServer(server);
 
 const initApp = (): void => {
-  app.listen(process.env.PORT, () =>
+  /*const httpServer = app.listen(process.env.PORT, () =>
+    console.log(`listening on port ${process.env.PORT}`)
+  );*/
+
+  server.listen(process.env.PORT, () =>
     console.log(`listening on port ${process.env.PORT}`)
   );
 };
-
-const socket = new SocketServer(7071);
 
 sequelize.sync({ force: false }).then(async () => {
   try {
