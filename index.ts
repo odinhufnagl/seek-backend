@@ -2,7 +2,7 @@ require("dotenv").config();
 import bodyParser from "body-parser";
 import express from "express";
 import * as admin from "firebase-admin";
-import { DBConstants, FIRST_TIME_ZONE } from "./src/constants";
+import { DBConstants } from "./src/constants";
 import { initCronJobs } from "./src/cronJobs/connecting";
 import {
   Country,
@@ -10,14 +10,12 @@ import {
   File,
   FileType,
   Language,
-  NotificationToken,
   QuestionContent,
-  User,
   sequelize,
 } from "./src/db/models/index";
 import { errorHandler } from "./src/middleware";
 import apiRoutes from "./src/routes/api/index";
-import { dbBulkCreate, dbCreate } from "./src/services";
+import { dbBulkCreate } from "./src/services";
 import { SocketServer } from "./src/socket/index";
 
 const serviceAccount = require("./serviceAccountKey.json");
@@ -49,7 +47,7 @@ const initApp = (): void => {
 
 const socket = new SocketServer(7071);
 
-sequelize.sync({ force: true }).then(async () => {
+sequelize.sync({ force: false }).then(async () => {
   const fileTypes = await dbBulkCreate(FileType, [
     { name: "image" },
     { name: "video" },
@@ -66,27 +64,7 @@ sequelize.sync({ force: true }).then(async () => {
     { name: "en" },
     { name: "se" },
   ]);
-  const user = await dbCreate(
-    User,
-    {
-      email: "odin.hufnagl@gmail.com",
-      name: "Odin Hufnagl",
-      password: "M1lan2012",
-      timeZone: FIRST_TIME_ZONE,
-      notificationTokens: [{ name: "huhuhu" }, { name: "huhu" }],
-    } as User,
-    { include: [{ model: NotificationToken }] }
-  );
-  const user2 = await dbCreate(
-    User,
-    {
-      email: "odin.hufnffffagl@gmail.com",
-      name: "Odin Hufnagl",
-      password: "M1lan2012",
-      timeZone: FIRST_TIME_ZONE,
-    } as User,
-    { include: [{ model: NotificationToken }] }
-  );
+
   const questionContent = await dbBulkCreate(
     QuestionContent,
     [

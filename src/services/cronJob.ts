@@ -1,6 +1,8 @@
 import { CronCommand, CronJob } from "cron";
 import moment, { Moment } from "moment-timezone";
-import { JobSchedule } from "../types";
+import { StoredCronJob } from "../db/models";
+import { JobSchedule, StoredCronJobType } from "../types";
+import { dbCreate, dbDelete } from "./db/db";
 
 type ScheduleJobParams = {
   jobSchedule: JobSchedule;
@@ -25,17 +27,38 @@ export const scheduleJob = ({
 type ScheduleOneJobParams = {
   date: Date;
   timeZone: string;
-  cronJobFunction: () => void;
+  cronJobFunction: (params: any) => void;
+  params: any;
+  type: StoredCronJobType;
 };
 
-export const scheduleOneJob = ({
+export const scheduleOneJob = async ({
   date,
   timeZone,
   cronJobFunction,
+  params,
+  type,
 }: ScheduleOneJobParams) => {
-  let cronJob = new CronJob(date, cronJobFunction, null, true, timeZone);
+  //TODO: now when we send the type, maybe we dont need to send the cronJobFunction and just have it mapped here...
+  const storedCronJob = await dbCreate(StoredCronJob, {
+    date,
+    timeZone,
+    params,
+    type,
+  } as StoredCronJob);
+  let cronJob = new CronJob(
+    date,
+    () => {
+      cronJobFunction(params);
+      dbDelete(StoredCronJob, { where: { id: storedCronJob.id } });
+    },
+    null,
+    true,
+    timeZone
+  );
 };
 
+//TODO: this one doesnt have params right now, doesnt work
 export const scheduleJobsOnTimezones = (
   date: Moment,
   timeZones: string[],
@@ -47,6 +70,9 @@ export const scheduleJobsOnTimezones = (
       date: timeZoneDate.toDate(),
       timeZone,
       cronJobFunction: cronJobFunctions[timeZone],
+      params: {},
+      //TODO: just to not give error
+      type: "createQuestion",
     });
   }
 };
