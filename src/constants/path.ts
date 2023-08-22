@@ -4,7 +4,7 @@ const { dirname } = require("path");
 const appDir = dirname(require.main?.filename);
 
 const defaultFolderPath = {
-  TEMP_FILE_FOLDER: path.join(appDir, "assets/temp"),
+  TEMP_FILE_FOLDER: path.join(appDir, "src/assets/temp"),
 } as const;
 
 export class PathConstants {

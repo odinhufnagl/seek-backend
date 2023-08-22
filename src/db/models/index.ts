@@ -35,6 +35,14 @@ export interface IModel {
     options: FindOptions
   ) => [affectedCount: number] | undefined;
 }
+/*const sequelize = new Sequelize(
+  process.env.DB_LOCAL_NAME || "",
+  process.env.DB_LOCAL_USERNAME || "",
+  process.env.DB_LOCAL_PASSWORD,
+  {
+    dialect: process.env.DB_DIALECT as Dialect,
+  }
+);*/
 
 const sequelize = new Sequelize(process.env.DB_NAME || "", {
   dialect: process.env.DB_DIALECT as Dialect,
