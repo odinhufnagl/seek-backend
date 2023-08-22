@@ -16,7 +16,7 @@ import Question from "./question";
 import QuestionContent from "./questionContent";
 import RadiusArea from "./radiusArea";
 import ReadMessage from "./readMessage";
-import StoredCronJob from "./StoredCronJob";
+import StoredCronJob from "./storedCronJob";
 import TimeZone from "./timeZone";
 import User from "./user";
 import UserChat from "./userChat";
@@ -36,15 +36,17 @@ export interface IModel {
   ) => [affectedCount: number] | undefined;
 }
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME || "",
-  process.env.DB_USERNAME || "",
-  process.env.DB_PASSWORD || "",
-  {
-    dialect: process.env.DB_DIALECT as Dialect,
-    logging: false,
-  }
-);
+const sequelize = new Sequelize(process.env.DB_NAME || "", {
+  dialect: process.env.DB_DIALECT as Dialect,
+  dialectOptions: {
+    ssl: {
+      require: true, // Make sure this is set to true
+      rejectUnauthorized: false, // Add this option if you encounter "self signed certificate" issues
+    },
+  },
+  logging: false,
+  ssl: true,
+});
 
 const models = {
   User,
@@ -94,16 +96,16 @@ export {
   Language,
   Location,
   Message,
-  models,
   NotificationToken,
   Question,
   QuestionContent,
   RadiusArea,
   ReadMessage,
-  sequelize,
   StoredCronJob,
   TimeZone,
   User,
   UserChat,
   UserQuestion,
+  models,
+  sequelize,
 };
