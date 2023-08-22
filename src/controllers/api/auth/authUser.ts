@@ -9,15 +9,23 @@ import {
   ApiWrongPasswordError,
 } from "../../../classes";
 import { DBConstants, UserRole } from "../../../constants";
-import { File } from "../../../db/models";
+import { Coordinate, File, Location } from "../../../db/models";
 import { generateUserToken } from "../../../services/auth";
 
 const signUp = async (req: Request, res: Response): Promise<void> => {
   const { password, ...userData } = req.body;
-  const user = await createUser({
-    password: hashSync(password),
-    ...userData,
-  });
+  const user = await createUser(
+    {
+      password: hashSync(password),
+      ...userData,
+    },
+    {
+      include: [
+        { model: File, as: DBConstants.fields.user.PROFILE_IMAGE },
+        { model: Location, include: [{ model: Coordinate }] },
+      ],
+    }
+  );
   const token = generateUserToken(user.id, UserRole.USER);
   res.send({ accessToken: token, user });
 };

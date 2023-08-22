@@ -6,6 +6,7 @@ import { Request } from "../../../types";
 
 const singleFileUploadController = async (req: Request, res: Response) => {
   const file = req.file;
+  console.log("file", file);
 
   if (!file) {
     throw new ApiNoBodyProvidedError();

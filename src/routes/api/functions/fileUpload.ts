@@ -7,7 +7,7 @@ import { asyncWrapper } from "../../../wrappers";
 
 const router = express.Router();
 
-router.get(
+router.post(
   "/",
   singleFileUploadMiddleware(FILE_UPLOAD_BODY_KEY),
   asyncWrapper(controller.singleFileUploadController)

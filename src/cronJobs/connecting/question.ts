@@ -1,7 +1,7 @@
 //TODO: the handling of timeZones right now is just as strings, not that good
 import moment from "moment-timezone";
-import { DBConstants, DateConstants, FIRST_TIME_ZONE } from "../../constants";
-import { File, Question } from "../../db/models";
+import { DateConstants, FIRST_TIME_ZONE } from "../../constants";
+import { Question } from "../../db/models";
 import { dbCreate, dbUpdate, scheduleOneJob } from "../../services";
 
 import { generateQuestionContent } from "../../services/question";
@@ -14,7 +14,7 @@ const HOURS_UNTIL_NEW_QUESTION_MIN = 1;
 const HOURS_UNTIL_NEW_QUESTION_MAX = 24;
 
 export const cronJobCreateQuestion = async () => {
-  const { title, coverImage } = generateQuestionContent();
+  const { title, coverImageId } = await generateQuestionContent();
   console.log("question To Create", "title", title);
   //timetostart is not actually necessary right now
   const timeToStart = moment()
@@ -24,10 +24,10 @@ export const cronJobCreateQuestion = async () => {
     Question,
     {
       title,
-      coverImage: coverImage as File,
+      coverImageId,
       timeToStart,
-    } as Question,
-    { include: [{ model: File, as: DBConstants.fields.question.COVER_IMAGE }] }
+    } as Question
+    // { include: [{ model: File, as: DBConstants.fields.question.COVER_IMAGE }] }
   );
   /*OLD: const dateToSendQuestionInvites = moment()
     .tz(FIRST_TIME_ZONE)
