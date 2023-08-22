@@ -13,6 +13,7 @@ import Location from "./location";
 import Message from "./message";
 import NotificationToken from "./notificationToken";
 import Question from "./question";
+import QuestionContent from "./questionContent";
 import RadiusArea from "./radiusArea";
 import ReadMessage from "./readMessage";
 import TimeZone from "./timeZone";
@@ -64,6 +65,7 @@ const models = {
   UserQuestion,
   NotificationToken,
   Language,
+  QuestionContent,
 };
 
 Object.keys(models).forEach((key, i) => {
@@ -79,25 +81,26 @@ Object.keys(models).forEach((key, i) => {
 });
 
 export {
-  sequelize,
-  models,
-  User,
+  Answer,
+  Area,
+  Chat,
   Coordinate,
   Country,
+  CountryArea,
   File,
   FileType,
+  Language,
   Location,
-  Area,
-  CountryArea,
+  Message,
+  NotificationToken,
+  Question,
+  QuestionContent,
   RadiusArea,
   ReadMessage,
-  UserChat,
-  Message,
-  Chat,
-  Answer,
-  Question,
   TimeZone,
+  User,
+  UserChat,
   UserQuestion,
-  NotificationToken,
-  Language,
+  models,
+  sequelize,
 };

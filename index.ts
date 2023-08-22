@@ -2,14 +2,16 @@ require("dotenv").config();
 import bodyParser from "body-parser";
 import express from "express";
 import * as admin from "firebase-admin";
-import { FIRST_TIME_ZONE } from "./src/constants";
+import { DBConstants, FIRST_TIME_ZONE } from "./src/constants";
 import { initCronJobs } from "./src/cronJobs/connecting";
 import {
   Country,
   CountryArea,
+  File,
   FileType,
   Language,
   NotificationToken,
+  QuestionContent,
   User,
   sequelize,
 } from "./src/db/models/index";
@@ -84,6 +86,30 @@ sequelize.sync({ force: true }).then(async () => {
       timeZone: FIRST_TIME_ZONE,
     } as User,
     { include: [{ model: NotificationToken }] }
+  );
+  const questionContent = await dbBulkCreate(
+    QuestionContent,
+    [
+      {
+        title: "What is your favourite movie?",
+        coverImage: {
+          url: "https://images.unsplash.com/photo-1485846234645-a62644f84728?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW92aWV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+          name: "movie",
+        } as File,
+      },
+      {
+        title: "What is something you wish you said?",
+        coverImage: {
+          url: "https://images.unsplash.com/35/JOd4DPGLThifgf38Lpgj_IMG.jpg?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNhZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+          name: "wish",
+        } as File,
+      },
+    ],
+    {
+      include: [
+        { model: File, as: DBConstants.fields.questionContent.COVER_IMAGE },
+      ],
+    }
   );
 
   initApp();

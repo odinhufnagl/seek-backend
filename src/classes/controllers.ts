@@ -144,11 +144,14 @@ export class BaseController<M, M2 = {}> {
       res.send(ResponseConstants.defaultResponses.success());
     };
   getNtoM =
-    (get: (dbObject: M) => Promise<any>, idParam = this.defaultIdParam) =>
+    (
+      get: (dbObject: M, dbOptions?: FindOptions) => Promise<any>,
+      idParam = this.defaultIdParam
+    ) =>
     async (req: RequestWithDBOptions, res: Response, next: NextFunction) => {
       const id = Number(req.params[idParam]);
       const dbObject = await dbFindByPK(this.model, id);
-      const data = await get(dbObject);
+      const data = await get(dbObject, req.dbOptions);
       res.send(data);
     };
   postNtoM =

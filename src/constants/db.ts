@@ -36,6 +36,9 @@ const DBFields = {
     COVER_IMAGE: "coverImage",
     ANSWERS: "answers",
   },
+  questionContent: {
+    COVER_IMAGE: "coverImage",
+  },
   area: {
     SUB_TYPE_ID: "subTypeId",
   },

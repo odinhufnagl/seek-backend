@@ -14,7 +14,7 @@ import { dbFindAndCountAll, dbFindOne } from "../../../../../services";
 import { Request, ResponseBodyChats } from "../../../../../types";
 const controller = new BaseController<User, Chat>(User, "user");
 //TODO: check places where we use SQL and check so there is no injections available
-const getChats = controller.getNtoM(async (user) => {
+const getChats = controller.getNtoM(async (user, dbOptions) => {
   const res: ResponseBodyChats = await dbFindAndCountAll(Chat, {
     replacements: { userId: user.id },
     attributes: {
@@ -62,6 +62,7 @@ const getChats = controller.getNtoM(async (user) => {
         order: [["createdAt", "DESC"]],
       },
     ],
+    ...dbOptions,
   });
   const chats = res.rows;
   //TODO: do this in the query, but here we manually update the fieldName to lastMessage. Should be able to be done with a JOIN in some way

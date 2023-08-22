@@ -1,15 +1,18 @@
-import { File, FileType } from "../db/models";
+import { Sequelize } from "sequelize";
+import { DBConstants } from "../constants";
+import { File, QuestionContent } from "../db/models";
+import { dbDelete, dbFindAll } from "./db/db";
 
-type QuestionContent = {
-  title: string;
-  coverImage: File;
+export const generateQuestionContent = async (): Promise<QuestionContent> => {
+  const randomQuestionContent = (
+    await dbFindAll(QuestionContent, {
+      order: Sequelize.literal("random()"),
+      limit: 1,
+      include: [
+        { model: File, as: DBConstants.fields.questionContent.COVER_IMAGE },
+      ],
+    })
+  )[0];
+  await dbDelete(QuestionContent, { where: { id: randomQuestionContent.id } });
+  return randomQuestionContent;
 };
-
-export const generateQuestionContent = (): QuestionContent => ({
-  title: "Where would you like to travel next?",
-  coverImage: {
-    url: "https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2231&q=80",
-    name: "An image",
-    type: { name: "image" } as FileType,
-  } as File,
-});

@@ -1,4 +1,4 @@
-import { FindOptions, UpdateOptions } from "sequelize";
+import { CreateOptions, FindOptions, UpdateOptions } from "sequelize";
 import { DatabaseCreateError, DatabaseNotFoundError } from "../../classes";
 import { User, models } from "../../db/models";
 
@@ -37,8 +37,11 @@ export const findUserByPK = async (
   return res;
 };
 
-export const createUser = async (values: User): Promise<User> => {
-  const res = (await dbCreate(models.User, values as any)) as User;
+export const createUser = async (
+  values: User,
+  options?: CreateOptions
+): Promise<User> => {
+  const res = (await dbCreate(models.User, values as any, options)) as User;
   if (!res) {
     throw new DatabaseCreateError();
   }
