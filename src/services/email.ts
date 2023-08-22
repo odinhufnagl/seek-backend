@@ -1,10 +1,10 @@
-import nodemailer from "nodemailer";
 import ejs from "ejs";
 import fs from "fs";
+import nodemailer from "nodemailer";
+import { AuthenticationType } from "nodemailer/lib/smtp-connection";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 import path from "path";
 import { EmailData } from "../types";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
-import { AuthenticationType } from "nodemailer/lib/smtp-connection";
 
 const EMAIL_CLIENT_AUTH: AuthenticationType = {
   user: "odin.hufnagl@gmail.com",
@@ -19,7 +19,7 @@ const TRANSPORT: SMTPTransport.Options = {
 };
 
 const emailTemplatePath = (template: string): string =>
-  path.resolve() + `/assets/emailTemplates/${template}.ejs`;
+  path.resolve() + `src/assets/emailTemplates/${template}.ejs`;
 
 const getEmailTemplate = (template: string) => {
   return fs.readFileSync(emailTemplatePath(template), "utf-8");
