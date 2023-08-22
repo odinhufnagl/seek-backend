@@ -2,7 +2,7 @@
 import moment from "moment-timezone";
 import { DateConstants, FIRST_TIME_ZONE } from "../../constants";
 import { Question } from "../../db/models";
-import { dbCreate, dbUpdate, scheduleOneJob } from "../../services";
+import { dbCreate, dbFindByPK, dbUpdate, scheduleOneJob } from "../../services";
 
 import { generateQuestionContent } from "../../services/question";
 import { connectUsers } from "./connect";
@@ -45,11 +45,21 @@ export const cronJobCreateQuestion = async () => {
   scheduleOneJob({
     date: dateToFinishQuestion.toDate(),
     timeZone: FIRST_TIME_ZONE,
-    cronJobFunction: () => cronJobQuestionFinished(question),
+    cronJobFunction: cronJobQuestionFinished,
+    params: { questionId: question.id },
+    type: "finishQuestion",
   });
 };
 
-export const cronJobQuestionFinished = async (question: Question) => {
+export const cronJobQuestionFinished = async ({
+  questionId,
+}: {
+  questionId: number;
+}) => {
+  const question = await dbFindByPK(Question, Number(questionId));
+  if (!question) {
+    return;
+  }
   console.log("finishing question", question.title);
   await dbUpdate(
     Question,
@@ -69,6 +79,8 @@ export const cronJobQuestionFinished = async (question: Question) => {
   scheduleOneJob({
     date: dateToStartNewQuestion.toDate(),
     timeZone: FIRST_TIME_ZONE,
-    cronJobFunction: () => cronJobCreateQuestion(),
+    cronJobFunction: cronJobCreateQuestion,
+    params: {},
+    type: "createQuestion",
   });
 };

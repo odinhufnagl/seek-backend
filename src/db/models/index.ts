@@ -16,6 +16,7 @@ import Question from "./question";
 import QuestionContent from "./questionContent";
 import RadiusArea from "./radiusArea";
 import ReadMessage from "./readMessage";
+import StoredCronJob from "./StoredCronJob";
 import TimeZone from "./timeZone";
 import User from "./user";
 import UserChat from "./userChat";
@@ -66,6 +67,7 @@ const models = {
   NotificationToken,
   Language,
   QuestionContent,
+  StoredCronJob,
 };
 
 Object.keys(models).forEach((key, i) => {
@@ -92,15 +94,16 @@ export {
   Language,
   Location,
   Message,
+  models,
   NotificationToken,
   Question,
   QuestionContent,
   RadiusArea,
   ReadMessage,
+  sequelize,
+  StoredCronJob,
   TimeZone,
   User,
   UserChat,
   UserQuestion,
-  models,
-  sequelize,
 };

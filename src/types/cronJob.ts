@@ -5,3 +5,5 @@ export type JobSchedule = {
   second?: number;
   timeZone?: string;
 };
+
+export type StoredCronJobType = "createQuestion" | "finishQuestion";
