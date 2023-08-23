@@ -54,6 +54,6 @@
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node-schedule": "^2.1.0",
     "@types/nodemailer": "^6.4.6",
-    "@types/ws": "^8.5.3"
+    "@types/ws": "^8.5.5"
   }
 }
