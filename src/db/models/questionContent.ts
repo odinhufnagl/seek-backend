@@ -25,6 +25,7 @@ class QuestionContent extends Model {
         used: {
           type: DataTypes.BOOLEAN,
           defaultValue: false,
+          allowNull: false,
         },
       },
       {
