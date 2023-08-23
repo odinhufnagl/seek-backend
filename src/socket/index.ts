@@ -27,7 +27,7 @@ class ClientsStorage {
 }
 
 class SocketServer {
-  socket: Socket.Server<WebSocket>;
+  socket: Socket.Server;
   storage: ClientsStorage;
   //all requests should have a header with token that has the senderId stored,
   //and this token needs to be decoded

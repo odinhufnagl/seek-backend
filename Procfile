@@ -1,2 +1,2 @@
-worker:  pm2-runtime start index.ts -- --cron -T
-web: ts-node index.ts -T
+worker: pm2-runtime start ./build/index.js -- --cron
+web: node ./build/index.js
