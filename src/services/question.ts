@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 import { DBConstants } from "../constants";
 import { File, QuestionContent } from "../db/models";
-import { dbDelete, dbFindAll } from "./db/db";
+import { dbFindAll, dbUpdate } from "./db/db";
 
 export const generateQuestionContent = async (): Promise<QuestionContent> => {
   const randomQuestionContent = (
@@ -11,8 +11,13 @@ export const generateQuestionContent = async (): Promise<QuestionContent> => {
       include: [
         { model: File, as: DBConstants.fields.questionContent.COVER_IMAGE },
       ],
+      where: { used: false },
     })
   )[0];
-  await dbDelete(QuestionContent, { where: { id: randomQuestionContent.id } });
+  await dbUpdate(
+    QuestionContent,
+    { used: true },
+    { where: { id: randomQuestionContent.id } }
+  );
   return randomQuestionContent;
 };

@@ -15,34 +15,47 @@ const initCronJobs = async () => {
   //if there were no cronjob to start, start the one here
 
   const storedCronJobs = await dbFindAll(StoredCronJob);
-  storedCronJobs.forEach(({ timeZone, date, type, params }) => {
+  storedCronJobs.forEach(({ timeZone, date, type, params, id }) => {
+    let dateToStartJob = date;
+    const newDate = new Date();
+    if (date < newDate) {
+      dateToStartJob = moment().tz(FIRST_TIME_ZONE).add(1, "minute").toDate();
+    }
     if (type === "createQuestion") {
+      //TODO: maybe not send the function, rather have the mapping in the schedule function, because all jobs will need a type anyway.
+      //the only difference is, who decided which function to map to which type, is it the service function or here? Maybe it should actually be here as it is now
+
       scheduleOneJob({
         timeZone,
-        date,
+        date: dateToStartJob,
         cronJobFunction: cronJobCreateQuestion,
         params: {},
         type: "createQuestion",
+        storedJobId: id,
       });
     }
     if (type === "finishQuestion") {
       scheduleOneJob({
         timeZone,
-        date,
+        date: dateToStartJob,
         cronJobFunction: cronJobQuestionFinished,
         type: "finishQuestion",
         params,
+        storedJobId: id,
       });
     }
   });
-  const dateToStartNewQuestion = moment().tz(FIRST_TIME_ZONE).add(1, "minute");
+  const dateToStartNewQuestion = moment()
+    .tz(FIRST_TIME_ZONE)
+    .add(1, "minute")
+    .toDate();
   const existsCreateQuestionJob = storedCronJobs.find(
-    (cj) => cj.type === "createQuestion"
+    (cj) => cj.type === "createQuestion" || cj.type === "finishQuestion"
   );
   if (!existsCreateQuestionJob) {
     scheduleOneJob({
       timeZone: FIRST_TIME_ZONE,
-      date: dateToStartNewQuestion.toDate(),
+      date: dateToStartNewQuestion,
       cronJobFunction: cronJobCreateQuestion,
       type: "createQuestion",
       params: {},
