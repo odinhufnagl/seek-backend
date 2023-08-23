@@ -38,10 +38,10 @@ export const cronJobCreateQuestion = async () => {
   //OLD: scheduleCronJobsInviteToQuestion(dateToSendQuestionInvites, question);
 
   //TODO: change the time here, this so that after all answers are in we should start creating chats, better is if we would do this in the last timezone.
-  /*const dateToFinishQuestion = moment()
+  const dateToFinishQuestion = moment()
     .tz(FIRST_TIME_ZONE)
-    .add(HOURS_UNTIL_QUESTION_FINISHED, "hours");*/
-  const dateToFinishQuestion = moment().tz(FIRST_TIME_ZONE).add(1, "minute");
+    .add(HOURS_UNTIL_QUESTION_FINISHED, "hours");
+  //const dateToFinishQuestion = moment().tz(FIRST_TIME_ZONE).add(1, "minute");
   scheduleOneJob({
     date: dateToFinishQuestion.toDate(),
     timeZone: FIRST_TIME_ZONE,
