@@ -19,7 +19,7 @@ const TRANSPORT: SMTPTransport.Options = {
 };
 
 const emailTemplatePath = (template: string): string =>
-  path.resolve() + `src/assets/emailTemplates/${template}.ejs`;
+  path.resolve() + `assets/emailTemplates/${template}.ejs`;
 
 const getEmailTemplate = (template: string) => {
   return fs.readFileSync(emailTemplatePath(template), "utf-8");
