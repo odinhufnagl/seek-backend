@@ -35,6 +35,7 @@
     "node-schedule": "^2.1.1",
     "nodemailer": "^6.8.0",
     "pg": "^8.8.0",
+    "pm2": "^5.3.0",
     "querystring": "^0.2.1",
     "sequelize": "^6.25.3",
     "sequelize-query": "^1.0.4",
