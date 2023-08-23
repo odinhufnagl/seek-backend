@@ -3,7 +3,6 @@ import fs from "fs";
 import nodemailer from "nodemailer";
 import { AuthenticationType } from "nodemailer/lib/smtp-connection";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-import path from "path";
 import { EmailData } from "../types";
 
 const EMAIL_CLIENT_AUTH: AuthenticationType = {
@@ -19,7 +18,7 @@ const TRANSPORT: SMTPTransport.Options = {
 };
 
 const emailTemplatePath = (template: string): string =>
-  path.resolve() + `assets/emailTemplates/${template}.ejs`;
+  __dirname + `assets/emailTemplates/${template}.ejs`;
 
 const getEmailTemplate = (template: string) => {
   return fs.readFileSync(emailTemplatePath(template), "utf-8");
