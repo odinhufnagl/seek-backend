@@ -3,7 +3,6 @@ import bodyParser from "body-parser";
 import express from "express";
 import * as admin from "firebase-admin";
 import { createServer } from "http";
-import path from "path";
 import { DBConstants } from "./src/constants";
 import { initCronJobs } from "./src/cronJobs/connecting";
 import {
@@ -103,7 +102,7 @@ sequelize.sync({ force: false }).then(async () => {
   }
 
   const startCron = process.argv.includes("--cron");
-  console.log(path.resolve());
+  console.log(__dirname);
   if (startCron) {
     initCronJobs();
   } else {
