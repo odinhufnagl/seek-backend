@@ -101,6 +101,10 @@ sequelize.sync({ force: false }).then(async () => {
     console.log("data is probably already created");
   }
 
-  initApp();
-  initCronJobs();
+  const startCron = process.argv.includes("--cron");
+  if (startCron) {
+    initCronJobs();
+  } else {
+    initApp();
+  }
 });

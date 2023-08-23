@@ -8,6 +8,7 @@ class QuestionContent extends Model {
   public title!: string;
   public coverImage?: File;
   public coverImageId?: number;
+  public used!: boolean;
 
   static _init(sequelize: Sequelize): void {
     QuestionContent.init(
@@ -20,6 +21,10 @@ class QuestionContent extends Model {
         title: {
           type: DataTypes.STRING,
           allowNull: false,
+        },
+        used: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
         },
       },
       {
