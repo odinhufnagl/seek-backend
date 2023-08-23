@@ -43,17 +43,20 @@ export interface IModel {
     dialect: process.env.DB_DIALECT as Dialect,
   }
 );*/
-
+console.log("pro", process.env.DB_NAME);
 const sequelize = new Sequelize(process.env.DB_NAME || "", {
   dialect: process.env.DB_DIALECT as Dialect,
-  dialectOptions: {
-    ssl: {
-      require: true, // Make sure this is set to true
-      rejectUnauthorized: false, // Add this option if you encounter "self signed certificate" issues
-    },
-  },
+  dialectOptions:
+    process.env.NODE_ENV === "production"
+      ? {
+          ssl: {
+            require: true, // Make sure this is set to true
+            rejectUnauthorized: false, // Add this option if you encounter "self signed certificate" issues
+          },
+        }
+      : {},
   logging: false,
-  ssl: true,
+  ssl: process.env.NODE_ENV === "production",
 });
 
 const models = {
