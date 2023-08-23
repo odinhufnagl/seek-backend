@@ -30,6 +30,7 @@ type ScheduleOneJobParams = {
   cronJobFunction: (params: any) => void;
   params: any;
   type: StoredCronJobType;
+  storedJobId?: number;
 };
 
 export const scheduleOneJob = async ({
@@ -38,24 +39,39 @@ export const scheduleOneJob = async ({
   cronJobFunction,
   params,
   type,
+  storedJobId,
 }: ScheduleOneJobParams) => {
   //TODO: now when we send the type, maybe we dont need to send the cronJobFunction and just have it mapped here...
-  const storedCronJob = await dbCreate(StoredCronJob, {
-    date,
-    timeZone,
-    params,
-    type,
-  } as StoredCronJob);
-  let cronJob = new CronJob(
-    date,
-    () => {
-      cronJobFunction(params);
-      dbDelete(StoredCronJob, { where: { id: storedCronJob.id } });
-    },
-    null,
-    true,
-    timeZone
-  );
+  if (storedJobId) {
+    let cronJob = new CronJob(
+      date,
+      () => {
+        cronJobFunction(params);
+        dbDelete(StoredCronJob, { where: { id: storedJobId } });
+      },
+      null,
+      true,
+      timeZone
+    );
+  }
+  if (!storedJobId) {
+    const storedCronJob = await dbCreate(StoredCronJob, {
+      date,
+      timeZone,
+      params,
+      type,
+    } as StoredCronJob);
+    let cronJob = new CronJob(
+      date,
+      () => {
+        cronJobFunction(params);
+        dbDelete(StoredCronJob, { where: { id: storedCronJob.id } });
+      },
+      null,
+      true,
+      timeZone
+    );
+  }
 };
 
 //TODO: this one doesnt have params right now, doesnt work
