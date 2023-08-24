@@ -10,6 +10,7 @@ import { inviteAllUsersToQuestion, inviteToChat } from "./invites";
 
 const SECONDS_UNTIL_QUESTION_INVITATION = 20;
 const HOURS_UNTIL_QUESTION_FINISHED = 12;
+//TODO: this could break parts of the app, means that you get a question after just 13 hours from previous question
 const HOURS_UNTIL_NEW_QUESTION_MIN = 1;
 const HOURS_UNTIL_NEW_QUESTION_MAX = 24;
 

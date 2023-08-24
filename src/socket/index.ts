@@ -64,10 +64,9 @@ class SocketServer {
     }
   };
   //TODO: parse token more secure, this is just bad code temporary
-  //TODO: bad bad auth here, take a look into this, because right now awful with substring(6) and so on
   verifyRequest = (req: any): number | undefined => {
-    console.log(req.url.substring(6));
-    const token = req.url.substring(6);
+    const url = new URL("http://dummy" + req.url);
+    const token = url.searchParams.get("auth");
     if (!token) {
       return;
     }
