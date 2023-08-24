@@ -18,10 +18,10 @@ const searchController = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const offset = Number(req.query.offset);
     const userId = Number(req.query.userId);
     console.log("searchQuery", searchQuery, "userId", userId);
-    if (!searchQuery) {
+    if (!userId) {
         throw new classes_1.ApiQueryParamsError();
     }
-    const chats = yield (0, services_1.searchChats)(userId, searchQuery, { limit, offset });
+    const chats = yield (0, services_1.searchChats)(userId, searchQuery || "", { limit, offset });
     res.send({ chats });
 });
 exports.default = { searchController };
