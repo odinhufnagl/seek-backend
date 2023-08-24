@@ -17,12 +17,7 @@ export const inviteToChat = async (userChats: UserChat[]) => {
     UserChat,
     { isInvited: true },
     {
-      where: {
-        [Op.or]: userChats.map((o) => ({
-          chatId: o.chatId,
-          userId: o.userId,
-        })),
-      },
+      where: { id: { [Op.in]: userChats.map((uc) => uc.id) } },
     }
   );
   //TODO: bad bad bad! Should restructure it in some way
@@ -30,9 +25,11 @@ export const inviteToChat = async (userChats: UserChat[]) => {
     where: { id: { [Op.in]: userChats.map((uc) => uc.id) } },
     include: [{ model: Chat, include: [{ model: User }, { model: Question }] }],
   });
+  console.log("extendedUserChats", extendedUserChats);
 
   for (const userChat of extendedUserChats) {
     const otherUser = userChat.chat.users.find((u) => u.id !== userChat.userId);
+    console.log("otherUser", otherUser);
     if (!otherUser) {
       continue;
     }
