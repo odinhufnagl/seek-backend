@@ -1,12 +1,10 @@
-import { translations } from "./translations";
-import { ServerLanguage } from "../types/serverLanguages";
 import {
   DefaultEmailForgotPasswordProps,
-  EmailData,
   EmailTemplate,
   EmailType,
 } from "../types";
-import { Server } from "ws";
+import { ServerLanguage } from "../types/serverLanguages";
+import { translations } from "./translations";
 
 const auth = {
   user: "odin.hufnagl@gmail.com",

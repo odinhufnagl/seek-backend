@@ -1,0 +1,24 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const answers_1 = __importDefault(require("./answers"));
+const chats_1 = __importDefault(require("./chats"));
+const messages_1 = __importDefault(require("./messages"));
+const notificationTokens_1 = __importDefault(require("./notificationTokens"));
+const questions_1 = __importDefault(require("./questions"));
+const readMessages_1 = __importDefault(require("./readMessages"));
+const userChats_1 = __importDefault(require("./userChats"));
+const users_1 = __importDefault(require("./users"));
+const dbRouter = (0, express_1.Router)({ mergeParams: true });
+dbRouter.use("/users", users_1.default);
+dbRouter.use("/questions", questions_1.default);
+dbRouter.use("/answers", answers_1.default);
+dbRouter.use("/messages", messages_1.default);
+dbRouter.use("/chats", chats_1.default);
+dbRouter.use("/userChats", userChats_1.default);
+dbRouter.use("/readMessages", readMessages_1.default);
+dbRouter.use("/notificationTokens", notificationTokens_1.default);
+exports.default = dbRouter;
