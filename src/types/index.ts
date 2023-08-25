@@ -3,6 +3,7 @@ export * from "./common";
 export * from "./cronJob";
 export * from "./dictionary";
 export * from "./email";
+export * from "./errors";
 export * from "./file";
 export * from "./googleMaps";
 export * from "./maps";

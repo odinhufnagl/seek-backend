@@ -9,13 +9,25 @@ const errorHandler = (err, req, res, next) => {
     if (err instanceof classes_1.ApiError) {
         res
             .status(err.statusCode)
-            .json({ error: { message: err.message, success: false } });
+            .json({
+            error: {
+                message: err.message,
+                success: false,
+                errorCode: err.errorCode,
+            },
+        });
         return;
     }
     //the error is either some random error or a serviceerror that the controller did not catch
     const apiErr = classes_1.ApiError.fromError(err);
     res
         .status(apiErr.statusCode)
-        .send({ error: { message: apiErr.message, success: false } });
+        .send({
+        error: {
+            message: apiErr.message,
+            success: false,
+            errorCode: apiErr.errorCode,
+        },
+    });
 };
 exports.errorHandler = errorHandler;

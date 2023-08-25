@@ -19,7 +19,7 @@ const checkUserDuplicateEmail = (req, res, next) => __awaiter(void 0, void 0, vo
         },
     });
     if (userExists) {
-        throw new classes_1.ApiDatabaseAlreadyExistError();
+        throw new classes_1.ApiEmailAlreadyInUseError();
     }
     next();
 });

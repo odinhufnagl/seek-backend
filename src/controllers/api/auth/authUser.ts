@@ -5,8 +5,8 @@ import { Request } from "../../../types";
 
 import {
   ApiAuthenticateError,
-  ApiDatabaseNotFoundError,
-  ApiWrongPasswordError,
+  ApiWrongPasswordEmailError,
+  DatabaseNotFoundError,
 } from "../../../classes";
 import { DBConstants, UserRole } from "../../../constants";
 import { Coordinate, File, Location } from "../../../db/models";
@@ -32,24 +32,30 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
 
 const signIn = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
-  const user = await findUser({
-    where: { email },
-    attributes: { include: ["password"] },
-    include: [{ model: File, as: DBConstants.fields.user.PROFILE_IMAGE }],
-  });
-  if (!user.password) {
-    throw new ApiDatabaseNotFoundError();
+  try {
+    const user = await findUser({
+      where: { email },
+      attributes: { include: ["password"] },
+      include: [{ model: File, as: DBConstants.fields.user.PROFILE_IMAGE }],
+    });
+
+    if (!user.password) {
+      throw new ApiWrongPasswordEmailError();
+    }
+    var passwordIsValid = compareSync(password, user?.password);
+    if (!passwordIsValid) {
+      throw new ApiWrongPasswordEmailError();
+    }
+    const token = generateUserToken(user.id, UserRole.USER);
+    res.send({
+      user,
+      accessToken: token,
+    });
+  } catch (e) {
+    if (e instanceof DatabaseNotFoundError) {
+      throw new ApiWrongPasswordEmailError();
+    }
   }
-  console.log(password, user?.password);
-  var passwordIsValid = compareSync(password, user?.password);
-  if (!passwordIsValid) {
-    throw new ApiWrongPasswordError();
-  }
-  const token = generateUserToken(user.id, UserRole.USER);
-  res.send({
-    user,
-    accessToken: token,
-  });
 };
 
 const authenticate = async (req: Request, res: Response): Promise<void> => {
