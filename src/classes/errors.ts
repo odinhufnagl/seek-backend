@@ -1,11 +1,20 @@
 import { AxiosError } from "axios";
 import { EmptyResultError } from "sequelize";
+import { ApiErrorType } from "../types";
+
+/*E100s: Authentication and authorization errors.
+E200s: Input validation errors.
+E300s: Database or data access errors.
+E400s: Business logic errors.
+E500s: Server and infrastructure errors.*/
 
 export class ApiError extends Error {
   public statusCode: number;
-  constructor(statusCode: number, message: string) {
+  public errorCode: ApiErrorType;
+  constructor(statusCode: number, errorCode: ApiErrorType, message: string) {
     super(message);
     this.statusCode = statusCode;
+    this.errorCode = errorCode;
     Error.captureStackTrace(this, this.constructor);
   }
   static createDefault() {
@@ -34,97 +43,102 @@ export class ApiError extends Error {
 
 export class ApiNotAllowedError extends ApiError {
   constructor() {
-    super(403, "Not allowed to touch this data");
+    super(403, "E100", "Not allowed to touch this data");
   }
 }
 
 export class ApiDefaultError extends ApiError {
   constructor() {
-    super(500, "Something went wrong");
+    super(500, "E500", "Something went wrong");
   }
 }
 
 export class ApiNoBodyProvidedError extends ApiError {
   constructor() {
-    super(400, "No body provided");
+    super(400, "E200", "No body provided");
   }
 }
 
 export class ApiBadBodyProvidedError extends ApiError {
   constructor() {
-    super(400, "Bad body provided");
+    super(400, "E200", "Bad body provided");
   }
 }
 
 export class ApiNotificationSendError extends ApiError {
   constructor() {
-    super(500, "There was a problem senging a notification");
+    super(500, "E500", "There was a problem senging a notification");
   }
 }
 
 export class ApiExternalError extends ApiError {
   constructor() {
-    super(502, "There was an external error");
+    super(502, "E500", "There was an external error");
   }
 }
 
 export class ApiEmailError extends ApiError {
   constructor() {
-    super(502, "Could not send email");
+    super(502, "E500", "Could not send email");
   }
 }
 
 export class ApiAuthenticateError extends ApiError {
   constructor() {
-    super(403, "Not authenticated");
+    super(403, "E100", "Not authenticated");
   }
 }
 
 export class ApiNoTokenError extends ApiError {
   constructor() {
-    super(403, "No token provided");
+    super(403, "E100", "No token provided");
   }
 }
 
 export class ApiNoKeyError extends ApiError {
   constructor() {
-    super(403, "No key provided");
+    super(403, "E100", "No key provided");
   }
 }
 
 export class ApiDatabaseError extends ApiError {
   constructor() {
-    super(500, "There was an error with the database");
+    super(500, "E300", "There was an error with the database");
   }
 }
 
 export class ApiDatabaseCreateError extends ApiError {
   constructor() {
-    super(500, "There was an error creating the data in the database");
+    super(500, "E300", "There was an error creating the data in the database");
   }
 }
 
 export class ApiDatabaseNotFoundError extends ApiError {
   constructor() {
-    super(400, "Could not find the resource in database");
+    super(400, "E300", "Could not find the resource in database");
   }
 }
 
 export class ApiDatabaseAlreadyExistError extends ApiError {
   constructor() {
-    super(400, "Data already exist in database");
+    super(400, "E200", "Data already exist in database");
   }
 }
 
-export class ApiWrongPasswordError extends ApiError {
+export class ApiWrongPasswordEmailError extends ApiError {
   constructor() {
-    super(401, "Wrong password");
+    super(401, "E101", "Wrong password or email");
+  }
+}
+export class ApiEmailAlreadyInUseError extends ApiError {
+  constructor() {
+    super(401, "E203", "Email already in use");
   }
 }
 
 export class ApiQueryParamsError extends ApiError {
   constructor() {
-    super(400, "Something went wrong parsing the query parameters");
+    super(400, "E200", "Something went wrong parsing the query parameters");
   }
 }
 

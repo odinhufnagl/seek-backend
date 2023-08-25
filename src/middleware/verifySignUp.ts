@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiDatabaseAlreadyExistError } from "../classes";
+import { ApiEmailAlreadyInUseError } from "../classes";
 import { existsUser } from "../services/db/users";
 const checkUserDuplicateEmail = async (
   req: Request,
@@ -12,7 +12,7 @@ const checkUserDuplicateEmail = async (
     },
   });
   if (userExists) {
-    throw new ApiDatabaseAlreadyExistError();
+    throw new ApiEmailAlreadyInUseError();
   }
   next();
 };
