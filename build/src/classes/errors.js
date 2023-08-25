@@ -1,12 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NotificationSendError = exports.ExternalError = exports.EmailError = exports.AuthenticateError = exports.DuplicateError = exports.DatabaseCreateError = exports.DatabaseNotFoundError = exports.DatabaseError = exports.ServiceError = exports.ApiQueryParamsError = exports.ApiWrongPasswordError = exports.ApiDatabaseAlreadyExistError = exports.ApiDatabaseNotFoundError = exports.ApiDatabaseCreateError = exports.ApiDatabaseError = exports.ApiNoKeyError = exports.ApiNoTokenError = exports.ApiAuthenticateError = exports.ApiEmailError = exports.ApiExternalError = exports.ApiNotificationSendError = exports.ApiBadBodyProvidedError = exports.ApiNoBodyProvidedError = exports.ApiDefaultError = exports.ApiNotAllowedError = exports.ApiError = void 0;
+exports.NotificationSendError = exports.ExternalError = exports.EmailError = exports.AuthenticateError = exports.DuplicateError = exports.DatabaseCreateError = exports.DatabaseNotFoundError = exports.DatabaseError = exports.ServiceError = exports.ApiQueryParamsError = exports.ApiEmailAlreadyInUseError = exports.ApiWrongPasswordEmailError = exports.ApiDatabaseAlreadyExistError = exports.ApiDatabaseNotFoundError = exports.ApiDatabaseCreateError = exports.ApiDatabaseError = exports.ApiNoKeyError = exports.ApiNoTokenError = exports.ApiAuthenticateError = exports.ApiEmailError = exports.ApiExternalError = exports.ApiNotificationSendError = exports.ApiBadBodyProvidedError = exports.ApiNoBodyProvidedError = exports.ApiDefaultError = exports.ApiNotAllowedError = exports.ApiError = void 0;
 const axios_1 = require("axios");
 const sequelize_1 = require("sequelize");
+/*E100s: Authentication and authorization errors.
+E200s: Input validation errors.
+E300s: Database or data access errors.
+E400s: Business logic errors.
+E500s: Server and infrastructure errors.*/
 class ApiError extends Error {
-    constructor(statusCode, message) {
+    constructor(statusCode, errorCode, message) {
         super(message);
         this.statusCode = statusCode;
+        this.errorCode = errorCode;
         Error.captureStackTrace(this, this.constructor);
     }
     static createDefault() {
@@ -34,97 +40,103 @@ class ApiError extends Error {
 exports.ApiError = ApiError;
 class ApiNotAllowedError extends ApiError {
     constructor() {
-        super(403, "Not allowed to touch this data");
+        super(403, "E100", "Not allowed to touch this data");
     }
 }
 exports.ApiNotAllowedError = ApiNotAllowedError;
 class ApiDefaultError extends ApiError {
     constructor() {
-        super(500, "Something went wrong");
+        super(500, "E500", "Something went wrong");
     }
 }
 exports.ApiDefaultError = ApiDefaultError;
 class ApiNoBodyProvidedError extends ApiError {
     constructor() {
-        super(400, "No body provided");
+        super(400, "E200", "No body provided");
     }
 }
 exports.ApiNoBodyProvidedError = ApiNoBodyProvidedError;
 class ApiBadBodyProvidedError extends ApiError {
     constructor() {
-        super(400, "Bad body provided");
+        super(400, "E200", "Bad body provided");
     }
 }
 exports.ApiBadBodyProvidedError = ApiBadBodyProvidedError;
 class ApiNotificationSendError extends ApiError {
     constructor() {
-        super(500, "There was a problem senging a notification");
+        super(500, "E500", "There was a problem senging a notification");
     }
 }
 exports.ApiNotificationSendError = ApiNotificationSendError;
 class ApiExternalError extends ApiError {
     constructor() {
-        super(502, "There was an external error");
+        super(502, "E500", "There was an external error");
     }
 }
 exports.ApiExternalError = ApiExternalError;
 class ApiEmailError extends ApiError {
     constructor() {
-        super(502, "Could not send email");
+        super(502, "E500", "Could not send email");
     }
 }
 exports.ApiEmailError = ApiEmailError;
 class ApiAuthenticateError extends ApiError {
     constructor() {
-        super(403, "Not authenticated");
+        super(403, "E100", "Not authenticated");
     }
 }
 exports.ApiAuthenticateError = ApiAuthenticateError;
 class ApiNoTokenError extends ApiError {
     constructor() {
-        super(403, "No token provided");
+        super(403, "E100", "No token provided");
     }
 }
 exports.ApiNoTokenError = ApiNoTokenError;
 class ApiNoKeyError extends ApiError {
     constructor() {
-        super(403, "No key provided");
+        super(403, "E100", "No key provided");
     }
 }
 exports.ApiNoKeyError = ApiNoKeyError;
 class ApiDatabaseError extends ApiError {
     constructor() {
-        super(500, "There was an error with the database");
+        super(500, "E300", "There was an error with the database");
     }
 }
 exports.ApiDatabaseError = ApiDatabaseError;
 class ApiDatabaseCreateError extends ApiError {
     constructor() {
-        super(500, "There was an error creating the data in the database");
+        super(500, "E300", "There was an error creating the data in the database");
     }
 }
 exports.ApiDatabaseCreateError = ApiDatabaseCreateError;
 class ApiDatabaseNotFoundError extends ApiError {
     constructor() {
-        super(400, "Could not find the resource in database");
+        super(400, "E300", "Could not find the resource in database");
     }
 }
 exports.ApiDatabaseNotFoundError = ApiDatabaseNotFoundError;
 class ApiDatabaseAlreadyExistError extends ApiError {
     constructor() {
-        super(400, "Data already exist in database");
+        super(400, "E200", "Data already exist in database");
     }
 }
 exports.ApiDatabaseAlreadyExistError = ApiDatabaseAlreadyExistError;
-class ApiWrongPasswordError extends ApiError {
+class ApiWrongPasswordEmailError extends ApiError {
     constructor() {
-        super(401, "Wrong password");
+        super(401, "E101", "Wrong password or email");
     }
 }
-exports.ApiWrongPasswordError = ApiWrongPasswordError;
+exports.ApiWrongPasswordEmailError = ApiWrongPasswordEmailError;
+class ApiEmailAlreadyInUseError extends ApiError {
+    constructor() {
+        super(401, "E203", "Email already in use");
+    }
+}
+exports.ApiEmailAlreadyInUseError = ApiEmailAlreadyInUseError;
 class ApiQueryParamsError extends ApiError {
     constructor() {
-        super(400, "Something went wrong parsing the query parameters");
+        super(400, "E200", "Something went wrong parsing the query parameters");
     }
 }
 exports.ApiQueryParamsError = ApiQueryParamsError;

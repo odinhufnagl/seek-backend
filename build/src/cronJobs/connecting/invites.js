@@ -19,20 +19,17 @@ const services_1 = require("../../services");
 //TODO: fix translations with questionText. Dont hardcode language, should be based on users language. Should not send questionText to notification, send translations
 const inviteToChat = (userChats) => __awaiter(void 0, void 0, void 0, function* () {
     const userChatsUpdated = yield (0, services_1.dbUpdate)(models_1.UserChat, { isInvited: true }, {
-        where: {
-            [sequelize_1.Op.or]: userChats.map((o) => ({
-                chatId: o.chatId,
-                userId: o.userId,
-            })),
-        },
+        where: { id: { [sequelize_1.Op.in]: userChats.map((uc) => uc.id) } },
     });
     //TODO: bad bad bad! Should restructure it in some way
     const extendedUserChats = yield (0, services_1.dbFindAll)(models_1.UserChat, {
         where: { id: { [sequelize_1.Op.in]: userChats.map((uc) => uc.id) } },
         include: [{ model: models_1.Chat, include: [{ model: models_1.User }, { model: models_1.Question }] }],
     });
+    console.log("extendedUserChats", extendedUserChats);
     for (const userChat of extendedUserChats) {
         const otherUser = userChat.chat.users.find((u) => u.id !== userChat.userId);
+        console.log("otherUser", otherUser);
         if (!otherUser) {
             continue;
         }

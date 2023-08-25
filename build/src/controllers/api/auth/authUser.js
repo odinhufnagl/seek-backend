@@ -39,24 +39,30 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    const user = yield (0, users_1.findUser)({
-        where: { email },
-        attributes: { include: ["password"] },
-        include: [{ model: models_1.File, as: constants_1.DBConstants.fields.user.PROFILE_IMAGE }],
-    });
-    if (!user.password) {
-        throw new classes_1.ApiDatabaseNotFoundError();
+    try {
+        const user = yield (0, users_1.findUser)({
+            where: { email },
+            attributes: { include: ["password"] },
+            include: [{ model: models_1.File, as: constants_1.DBConstants.fields.user.PROFILE_IMAGE }],
+        });
+        if (!user.password) {
+            throw new classes_1.ApiWrongPasswordEmailError();
+        }
+        var passwordIsValid = (0, bcryptjs_1.compareSync)(password, user === null || user === void 0 ? void 0 : user.password);
+        if (!passwordIsValid) {
+            throw new classes_1.ApiWrongPasswordEmailError();
+        }
+        const token = (0, auth_1.generateUserToken)(user.id, constants_1.UserRole.USER);
+        res.send({
+            user,
+            accessToken: token,
+        });
     }
-    console.log(password, user === null || user === void 0 ? void 0 : user.password);
-    var passwordIsValid = (0, bcryptjs_1.compareSync)(password, user === null || user === void 0 ? void 0 : user.password);
-    if (!passwordIsValid) {
-        throw new classes_1.ApiWrongPasswordError();
+    catch (e) {
+        if (e instanceof classes_1.DatabaseNotFoundError) {
+            throw new classes_1.ApiWrongPasswordEmailError();
+        }
     }
-    const token = (0, auth_1.generateUserToken)(user.id, constants_1.UserRole.USER);
-    res.send({
-        user,
-        accessToken: token,
-    });
 });
 const authenticate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.curUserId || req.userRole !== constants_1.UserRole.USER) {
