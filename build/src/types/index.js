@@ -19,6 +19,7 @@ __exportStar(require("./common"), exports);
 __exportStar(require("./cronJob"), exports);
 __exportStar(require("./dictionary"), exports);
 __exportStar(require("./email"), exports);
+__exportStar(require("./errors"), exports);
 __exportStar(require("./file"), exports);
 __exportStar(require("./googleMaps"), exports);
 __exportStar(require("./maps"), exports);

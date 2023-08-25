@@ -3,20 +3,10 @@ import bodyParser from "body-parser";
 import express from "express";
 import * as admin from "firebase-admin";
 import { createServer } from "http";
-import { DBConstants } from "./src/constants";
 import { initCronJobs } from "./src/cronJobs/connecting";
-import {
-  Country,
-  CountryArea,
-  File,
-  FileType,
-  Language,
-  QuestionContent,
-  sequelize,
-} from "./src/db/models/index";
+import { sequelize } from "./src/db/models/index";
 import { errorHandler } from "./src/middleware";
 import apiRoutes from "./src/routes/api/index";
-import { dbBulkCreate } from "./src/services";
 import { SocketServer } from "./src/socket";
 const serviceAccount = require("./serviceAccountKey.json");
 
@@ -55,7 +45,7 @@ const initApp = (): void => {
 
 sequelize.sync({ force: false }).then(async () => {
   try {
-    const fileTypes = await dbBulkCreate(FileType, [
+    /* const fileTypes = await dbBulkCreate(FileType, [
       { name: "image" },
       { name: "video" },
     ] as FileType[]);
@@ -76,14 +66,32 @@ sequelize.sync({ force: false }).then(async () => {
       QuestionContent,
       [
         {
-          title: "What is your favourite movie?",
+          title:
+            "What's the most interesting thing that happened to you this week?",
           coverImage: {
-            url: "https://images.unsplash.com/photo-1485846234645-a62644f84728?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW92aWV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+            url: "https://images.unsplash.com/photo-1520880867055-1e30d1cb001c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
             name: "movie",
           } as File,
         },
         {
-          title: "What is something you wish you said?",
+          title:
+            "If you could travel anywhere in the world right now, where would you go and why?",
+          coverImage: {
+            url: "https://images.unsplash.com/photo-1520880867055-1e30d1cb001c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
+            name: "wish",
+          } as File,
+        },
+        {
+          title:
+            "What's a skill or hobby you've always wanted to learn but haven't had the chance to yet?",
+          coverImage: {
+            url: "https://images.unsplash.com/35/JOd4DPGLThifgf38Lpgj_IMG.jpg?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNhZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+            name: "wish",
+          } as File,
+        },
+        {
+          title:
+            "If you could give your younger self one piece of advice, what would it be?",
           coverImage: {
             url: "https://images.unsplash.com/35/JOd4DPGLThifgf38Lpgj_IMG.jpg?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNhZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
             name: "wish",
@@ -95,7 +103,7 @@ sequelize.sync({ force: false }).then(async () => {
           { model: File, as: DBConstants.fields.questionContent.COVER_IMAGE },
         ],
       }
-    );
+    );*/
   } catch (e) {
     console.log("e", e);
     console.log("data is probably already created");
