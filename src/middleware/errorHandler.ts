@@ -16,12 +16,24 @@ export const errorHandler = (
   if (err instanceof ApiError) {
     res
       .status(err.statusCode)
-      .json({ error: { message: err.message, success: false } });
+      .json({
+        error: {
+          message: err.message,
+          success: false,
+          errorCode: err.errorCode,
+        },
+      });
     return;
   }
   //the error is either some random error or a serviceerror that the controller did not catch
   const apiErr = ApiError.fromError(err);
   res
     .status(apiErr.statusCode)
-    .send({ error: { message: apiErr.message, success: false } });
+    .send({
+      error: {
+        message: apiErr.message,
+        success: false,
+        errorCode: apiErr.errorCode,
+      },
+    });
 };
