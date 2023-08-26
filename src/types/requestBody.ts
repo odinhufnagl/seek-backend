@@ -16,3 +16,11 @@ export interface RequestBodyNewChatSeen extends RequestBody {
   userId: number;
   chatId: number;
 }
+export interface RequestBodyBlockUser extends RequestBody {
+  userToBlockId: number;
+  userBlockingId: number;
+}
+export interface RequestBodyUnblockUser extends RequestBody {
+  userToBlockId: number;
+  userBlockingId: number;
+}

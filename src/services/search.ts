@@ -9,7 +9,7 @@ export const searchChats = async (
   dbOptions: FindOptions<Chat>
 ): Promise<{ count: number; rows: Chat[] }> => {
   const userChats = await dbFindAndCountAll(UserChat, {
-    where: { userId },
+    where: { userId, isBlocked: false },
     include: [
       {
         model: Chat,

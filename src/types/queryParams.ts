@@ -30,3 +30,8 @@ export interface QueryParamsAddress extends QueryParams {
   lng?: string;
   place_id?: string;
 }
+
+export interface QueryParamsIsUserBlocked extends QueryParams {
+  userId: number;
+  blockerId: number;
+}
