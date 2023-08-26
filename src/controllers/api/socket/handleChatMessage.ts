@@ -24,6 +24,9 @@ const handleSocketChatMessage = async ({ sender, senderId, data }: Params) => {
   if (!otherUser || !user) {
     return;
   }
+  if (user?.userChat?.isBlocked) {
+    return;
+  }
   const newMessage = await dbCreate(Message, {
     chatId,
     userId,

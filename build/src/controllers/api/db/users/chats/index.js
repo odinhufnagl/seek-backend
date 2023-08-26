@@ -44,10 +44,10 @@ const getChats = controller.getNtoM((user, dbOptions) => __awaiter(void 0, void 
                 ],
             ],
         }, include: [
-            { model: models_1.UserChat, where: { userId: user.id } },
+            { model: models_1.UserChat, where: { userId: user.id, isBlocked: false } },
             {
                 model: models_1.User,
-                // where: { id: { [Op.not]: user.id } },
+                where: { id: { [sequelize_1.Op.not]: user.id } },
                 include: [{ model: models_1.File, as: constants_1.DBConstants.fields.user.PROFILE_IMAGE }],
             },
             { model: models_1.Question },

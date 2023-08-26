@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { literal } from "sequelize";
+import { Op, literal } from "sequelize";
 import { BaseController } from "../../../../../classes";
 import { DBConstants } from "../../../../../constants";
 import {
@@ -12,6 +12,7 @@ import {
 } from "../../../../../db/models";
 import { dbFindAndCountAll, dbFindOne } from "../../../../../services";
 import { Request, ResponseBodyChats } from "../../../../../types";
+
 const controller = new BaseController<User, Chat>(User, "user");
 //TODO: check places where we use SQL and check so there is no injections available
 const getChats = controller.getNtoM(async (user, dbOptions) => {
@@ -46,10 +47,10 @@ const getChats = controller.getNtoM(async (user, dbOptions) => {
     },
 
     include: [
-      { model: UserChat, where: { userId: user.id } },
+      { model: UserChat, where: { userId: user.id, isBlocked: false } },
       {
         model: User,
-        // where: { id: { [Op.not]: user.id } },
+        where: { id: { [Op.not]: user.id } },
         include: [{ model: File, as: DBConstants.fields.user.PROFILE_IMAGE }],
       },
       { model: Question },

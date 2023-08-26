@@ -28,6 +28,8 @@ const DBFields = {
     PROFILE_IMAGE: "profileImage",
     ANSWERS: "answers",
     CURRENT_LOCATION: "currentLocation",
+    HAS_BLOCKED: "hasBlocked",
+    IS_BLOCKED_BY: "isBlockedBy",
   },
   file: {
     TYPE: "type",
@@ -41,6 +43,12 @@ const DBFields = {
   },
   area: {
     SUB_TYPE_ID: "subTypeId",
+  },
+  userBlocking: {
+    BLOCKED: "blocked",
+    BLOCKER: "blocker",
+    BLOCKED_ID: "blockedId",
+    BLOCKER_ID: "blockerId",
   },
 } as const;
 

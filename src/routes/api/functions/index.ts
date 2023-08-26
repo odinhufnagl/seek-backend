@@ -1,12 +1,17 @@
 import { Router } from "express";
+import blockUserRouter from "./blockUser";
 import fileUploadRouter from "./fileUpload";
+import isUserBlockedRouter from "./isUserBlocked";
 import mapsRouter from "./maps";
 import newChatSeenRouter from "./newChatSeen";
 import searchRouter from "./search";
+import unblockUserRouter from "./unblockUser";
 const functionsRouter = Router({ mergeParams: true });
 functionsRouter.use("/fileUpload", fileUploadRouter);
 functionsRouter.use("/maps", mapsRouter);
 functionsRouter.use("/search", searchRouter);
 functionsRouter.use("/newChatSeen", newChatSeenRouter);
-
+functionsRouter.use("/blockUser", blockUserRouter);
+functionsRouter.use("/unblockUser", unblockUserRouter);
+functionsRouter.use("/isUserBlocked", isUserBlockedRouter);
 export default functionsRouter;
