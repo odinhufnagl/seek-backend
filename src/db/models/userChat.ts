@@ -10,6 +10,7 @@ class UserChat extends Model {
   public isInformed!: boolean;
   public isInvited!: boolean;
   public lastRead!: Date;
+  public isBlocked!: boolean;
 
   static _init(sequelize: Sequelize): void {
     UserChat.init(
@@ -36,6 +37,11 @@ class UserChat extends Model {
           defaultValue: false,
         },
         isInvited: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
+        isBlocked: {
           type: DataTypes.BOOLEAN,
           allowNull: false,
           defaultValue: false,

@@ -10,6 +10,7 @@ import Message from "./message";
 import NotificationToken from "./notificationToken";
 import Question from "./question";
 import ReadMessage from "./readMessage";
+import UserBlocking from "./userBlocking";
 import UserChat from "./userChat";
 import UserQuestion from "./userQuestion";
 
@@ -33,6 +34,9 @@ class User extends Model {
   public notificationTokens!: NotificationToken[];
   public language!: Language;
   public languageName!: string;
+  public isBlockedBy!: User[];
+  public hasBlocked!: User[];
+  public userChat?: UserChat;
   public getChats!: HasManyGetAssociationsMixin<Chat>;
 
   public static fields = DBConstants.fields.user;
@@ -121,6 +125,16 @@ class User extends Model {
     User.hasMany(Answer);
     User.hasMany(NotificationToken);
     User.belongsTo(Language);
+    User.belongsToMany(User, {
+      through: UserBlocking,
+      as: this.fields.IS_BLOCKED_BY,
+      foreignKey: DBConstants.fields.userBlocking.BLOCKED_ID,
+    });
+    User.belongsToMany(User, {
+      through: UserBlocking,
+      as: this.fields.HAS_BLOCKED,
+      foreignKey: DBConstants.fields.userBlocking.BLOCKER_ID,
+    });
   }
 }
 

@@ -4,14 +4,17 @@ import {
   QueryParamsAddress,
   QueryParamsCitySearch,
   QueryParamsCountry,
+  QueryParamsIsUserBlocked,
   QueryParamsLocationSearch,
   QueryParamsSearch,
 } from ".";
 import { UserRole } from "../constants";
 import {
   RequestBodyAcceptInvite,
+  RequestBodyBlockUser,
   RequestBodyNewChatSeen,
   RequestBodyPutUser,
+  RequestBodyUnblockUser,
 } from "./requestBody";
 
 export interface RequestWithUser extends ExpressRequest {
@@ -45,6 +48,16 @@ export interface RequestSearch extends Request {
 export interface RequestNewChatSeen extends Request {
   body: RequestBodyNewChatSeen;
 }
+export interface RequestBlockUser extends Request {
+  body: RequestBodyBlockUser;
+}
+export interface RequestUnblockUser extends Request {
+  body: RequestBodyUnblockUser;
+}
+export interface RequestIsUserBlocked extends Request {
+  query: QueryParamsIsUserBlocked;
+}
+
 export interface RequestCountry extends Request {
   query: QueryParamsCountry;
 }

@@ -19,6 +19,7 @@ import ReadMessage from "./readMessage";
 import StoredCronJob from "./storedCronJob";
 import TimeZone from "./timeZone";
 import User from "./user";
+import UserBlocking from "./userBlocking";
 import UserChat from "./userChat";
 import UserQuestion from "./userQuestion";
 
@@ -81,6 +82,7 @@ const models = {
   Language,
   QuestionContent,
   StoredCronJob,
+  UserBlocking,
 };
 
 Object.keys(models).forEach((key, i) => {
@@ -115,6 +117,7 @@ export {
   StoredCronJob,
   TimeZone,
   User,
+  UserBlocking,
   UserChat,
   UserQuestion,
   models,
