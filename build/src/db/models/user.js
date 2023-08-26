@@ -15,6 +15,7 @@ const message_1 = __importDefault(require("./message"));
 const notificationToken_1 = __importDefault(require("./notificationToken"));
 const question_1 = __importDefault(require("./question"));
 const readMessage_1 = __importDefault(require("./readMessage"));
+const userBlocking_1 = __importDefault(require("./userBlocking"));
 const userChat_1 = __importDefault(require("./userChat"));
 const userQuestion_1 = __importDefault(require("./userQuestion"));
 class User extends sequelize_1.Model {
@@ -98,6 +99,16 @@ class User extends sequelize_1.Model {
         User.hasMany(answer_1.default);
         User.hasMany(notificationToken_1.default);
         User.belongsTo(language_1.default);
+        User.belongsToMany(User, {
+            through: userBlocking_1.default,
+            as: this.fields.IS_BLOCKED_BY,
+            foreignKey: constants_1.DBConstants.fields.userBlocking.BLOCKED_ID,
+        });
+        User.belongsToMany(User, {
+            through: userBlocking_1.default,
+            as: this.fields.HAS_BLOCKED,
+            foreignKey: constants_1.DBConstants.fields.userBlocking.BLOCKER_ID,
+        });
     }
 }
 User.fields = constants_1.DBConstants.fields.user;
