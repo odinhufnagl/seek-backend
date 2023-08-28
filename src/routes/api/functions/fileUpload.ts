@@ -12,4 +12,9 @@ router.post(
   singleFileUploadMiddleware(FILE_UPLOAD_BODY_KEY),
   asyncWrapper(controller.singleFileUploadController)
 );
+router.post(
+  "/profileImage",
+  singleFileUploadMiddleware(FILE_UPLOAD_BODY_KEY),
+  asyncWrapper(controller.profileImageFileUploadController)
+);
 export default router;
