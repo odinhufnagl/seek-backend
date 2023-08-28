@@ -39,8 +39,7 @@ const uuid_1 = require("uuid");
 const constants_1 = require("../constants");
 const uploadFile = (file, folderPath, contentType) => __awaiter(void 0, void 0, void 0, function* () {
     const token = (0, uuid_1.v4)();
-    const ext = file.originalname.split(".").pop();
-    const fileName = `${(0, uuid_1.v4)()}.${ext}`;
+    const fileName = `${(0, uuid_1.v4)()}`;
     const destination = path.join(folderPath, fileName);
     /* const tempFilePath = path.join(
       PathConstants.defaultFolderPath.TEMP_FILE_FOLDER,
@@ -51,7 +50,7 @@ const uploadFile = (file, folderPath, contentType) => __awaiter(void 0, void 0, 
         .storage()
         .bucket()
         .file(destination)
-        .save(file.buffer, {
+        .save(file, {
         contentType,
         metadata: {
             metadata: {

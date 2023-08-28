@@ -4,13 +4,13 @@ import { v4 as uuidv4 } from "uuid";
 import { Endpoints } from "../constants";
 import { FilePath } from "../types";
 export const uploadFile = async (
-  file: Express.Multer.File,
+  file: string | Buffer,
   folderPath: string,
   contentType: string
 ): Promise<FilePath> => {
   const token = uuidv4();
-  const ext = file.originalname.split(".").pop();
-  const fileName = `${uuidv4()}.${ext}`;
+
+  const fileName = `${uuidv4()}`;
   const destination = path.join(folderPath, fileName);
   /* const tempFilePath = path.join(
     PathConstants.defaultFolderPath.TEMP_FILE_FOLDER,
@@ -21,7 +21,7 @@ export const uploadFile = async (
     .storage()
     .bucket()
     .file(destination)
-    .save(file.buffer, {
+    .save(file, {
       contentType,
       metadata: {
         metadata: {
