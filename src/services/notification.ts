@@ -5,18 +5,20 @@ import { NotificationToken, User } from "../db/models";
 import { Notification } from "../types";
 import { dbFindAll } from "./db/db";
 
+const androidPriorityFromNotification = (
+  notification: Notification
+): "high" | "normal" => notification.priority || "normal";
 const sendNotification = async (
   tokens: string[],
   notification: Notification
 ): Promise<boolean> => {
   try {
-    console.log("hello world");
     const res = await admin.messaging().sendEachForMulticast({
       tokens,
       notification: notification.payLoad.notification,
       data: notification.payLoad.data,
+      android: { priority: androidPriorityFromNotification(notification) },
     });
-    console.log("res", res.responses[0].error);
     return Boolean(res);
   } catch (e) {
     console.log(e);
