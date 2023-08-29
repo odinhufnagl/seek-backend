@@ -37,15 +37,15 @@ const admin = __importStar(require("firebase-admin"));
 const sequelize_1 = require("sequelize");
 const models_1 = require("../db/models");
 const db_1 = require("./db/db");
+const androidPriorityFromNotification = (notification) => notification.priority || "normal";
 const sendNotification = (tokens, notification) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("hello world");
         const res = yield admin.messaging().sendEachForMulticast({
             tokens,
             notification: notification.payLoad.notification,
             data: notification.payLoad.data,
+            android: { priority: androidPriorityFromNotification(notification) },
         });
-        console.log("res", res.responses[0].error);
         return Boolean(res);
     }
     catch (e) {

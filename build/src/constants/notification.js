@@ -80,5 +80,6 @@ NotificationConstants.defaultNotifications = {
                 questionText,
             })),
         },
+        priority: "high",
     }),
 };

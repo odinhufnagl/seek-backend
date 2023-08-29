@@ -6,4 +6,11 @@ class ExternalStorageConstants {
 exports.ExternalStorageConstants = ExternalStorageConstants;
 ExternalStorageConstants.defaultUploadFolderPath = {
     SERVER_UPLOADS: "serverUploads",
+    PROFILE_IMAGES: "profileImages",
+};
+ExternalStorageConstants.defaultQuality = {
+    PROFILE_IMAGE: 80,
+};
+ExternalStorageConstants.defaultSize = {
+    PROFILE_IMAGE: { width: 800, height: null },
 };

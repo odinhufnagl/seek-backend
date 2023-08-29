@@ -14,12 +14,16 @@ const constants_1 = require("../../../constants");
 const models_1 = require("../../../db/models");
 const services_1 = require("../../../services");
 const handleSocketChatMessage = ({ sender, senderId, data }) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     console.log("is sending message");
     const { userId, message, chatId } = data;
     const chat = yield (0, services_1.dbFindByPK)(models_1.Chat, chatId, { include: [{ model: models_1.User }] });
     const otherUser = chat === null || chat === void 0 ? void 0 : chat.users.find((u) => u.id !== userId);
     const user = chat === null || chat === void 0 ? void 0 : chat.users.find((u) => u.id === userId);
     if (!otherUser || !user) {
+        return;
+    }
+    if ((_a = user === null || user === void 0 ? void 0 : user.userChat) === null || _a === void 0 ? void 0 : _a.isBlocked) {
         return;
     }
     const newMessage = yield (0, services_1.dbCreate)(models_1.Message, {
