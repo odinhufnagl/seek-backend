@@ -145,6 +145,7 @@ class NotificationConstants {
           }),
         },
       },
+      priority: "high",
     }),
   };
 }

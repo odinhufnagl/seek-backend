@@ -70,6 +70,7 @@ export type NotificationType =
 export interface Notification {
   payLoad: NotificationPayload;
   options?: NotificationOptions;
+  priority?: "high" | "normal";
 }
 
 export interface NotificationIsActive extends Notification {
