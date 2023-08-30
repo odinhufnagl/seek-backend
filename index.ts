@@ -4,9 +4,10 @@ import express from "express";
 import * as admin from "firebase-admin";
 import { createServer } from "http";
 import { initCronJobs } from "./src/cronJobs/connecting";
-import { sequelize } from "./src/db/models/index";
+import { FileType, Language, sequelize } from "./src/db/models/index";
 import { errorHandler } from "./src/middleware";
 import apiRoutes from "./src/routes/api/index";
+import { dbBulkCreate } from "./src/services";
 import { SocketServer } from "./src/socket";
 const serviceAccount = require("./serviceAccountKey.json");
 
@@ -44,7 +45,45 @@ const initApp = (): void => {
 };
 
 sequelize.sync({ force: false }).then(async () => {
+  const languages = await dbBulkCreate(Language, [
+    { name: "en" },
+    { name: "se" },
+  ]);
+  const fileTypes = await dbBulkCreate(FileType, [
+    { name: "image" },
+    { name: "video" },
+  ] as FileType[]);
+
   try {
+    /*fs.readFile(
+      path.join(__dirname, "src/data/iso-alpha-2.json"),
+      "utf8",
+      async (err, data) => {
+        if (err) {
+          console.error("Error reading the file:", err);
+          return;
+        }
+
+        try {
+          const countryCodes = JSON.parse(data) as Record<string, string>;
+
+          // Now you have the array of objects from the JSON file
+          const countries = await dbBulkCreate(
+            Country,
+            Object.keys(countryCodes).map((code) => ({
+              code,
+              name: countryCodes[code],
+            }))
+          );
+          const countryArea = await dbBulkCreate(
+            CountryArea,
+            countries.map((c) => ({ countryCode: c.code }))
+          );
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
+      }
+    );*/
     /* const fileTypes = await dbBulkCreate(FileType, [
       { name: "image" },
       { name: "video" },

@@ -2,6 +2,7 @@ import { DataTypes } from "@sequelize/core";
 import { Model, Sequelize } from "sequelize";
 import { models } from ".";
 import { ExternalError } from "../../classes";
+import { CountryCodeConstants } from "../../constants";
 import { dbFindOne } from "../../services/db/db";
 import { findAddressDataByCoordinate } from "../../services/maps";
 import Coordinate from "./coordinate";
@@ -12,7 +13,7 @@ class Location extends Model {
   public address?: string;
   public cityName?: string;
   public postalCode?: string;
-  public countryId!: number;
+  public countryCode!: string;
   public coordinateId?: number;
   public coordinate?: Coordinate;
 
@@ -43,13 +44,15 @@ class Location extends Model {
         sequelize,
       }
     );
+
     Location.beforeCreate(async (instance, options) => {
-      const { address, postalCode, cityName, countryId, coordinate } = instance;
+      const { address, postalCode, cityName, countryCode, coordinate } =
+        instance;
 
       //if there exists a coordinate and any of these fields are empty we will fetch them ourselves based on the coordinate
       if (
         coordinate &&
-        [address, postalCode, countryId, cityName].some((p) => !p)
+        [address, postalCode, countryCode, cityName].some((p) => !p)
       ) {
         const addressData = await findAddressDataByCoordinate(coordinate);
         console.log(addressData);
@@ -65,24 +68,28 @@ class Location extends Model {
         if (!cityName) {
           instance.cityName = addressData.city;
         }
-        if (countryId === undefined) {
+        if (countryCode === undefined) {
           if (!addressData.country) {
             throw Error();
           }
-          const foundCountryId =
+          const foundCountryCode =
             //TODO: Maybe do mapping because right now the code used in googleMaps has to be used in the database aswell
             //should be enough with something like AddressDataCountryCodeToDBCode or something like that and it could probably just be in this model
             (
               await dbFindOne(models.Country, {
-                where: { code: addressData.country.code },
+                where: {
+                  code: CountryCodeConstants.Alpha2CodeToDB(
+                    addressData.country.code
+                  ),
+                },
               })
-            )?.id;
-          console.log("foundCountry", foundCountryId);
-          if (foundCountryId === undefined) {
+            )?.code;
+          console.log("foundCountry", foundCountryCode);
+          if (foundCountryCode === undefined) {
             //country does not exist error
             throw Error();
           }
-          instance.countryId = foundCountryId;
+          instance.countryCode = foundCountryCode;
         }
       }
     });
