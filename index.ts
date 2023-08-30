@@ -4,10 +4,9 @@ import express from "express";
 import * as admin from "firebase-admin";
 import { createServer } from "http";
 import { initCronJobs } from "./src/cronJobs/connecting";
-import { FileType, Language, sequelize } from "./src/db/models/index";
+import { sequelize } from "./src/db/models/index";
 import { errorHandler } from "./src/middleware";
 import apiRoutes from "./src/routes/api/index";
-import { dbBulkCreate } from "./src/services";
 import { SocketServer } from "./src/socket";
 const serviceAccount = require("./serviceAccountKey.json");
 
@@ -45,14 +44,14 @@ const initApp = (): void => {
 };
 
 sequelize.sync({ force: false }).then(async () => {
-  const languages = await dbBulkCreate(Language, [
+  /* const languages = await dbBulkCreate(Language, [
     { name: "en" },
     { name: "se" },
   ]);
   const fileTypes = await dbBulkCreate(FileType, [
     { name: "image" },
     { name: "video" },
-  ] as FileType[]);
+  ] as FileType[]);*/
 
   try {
     /*fs.readFile(

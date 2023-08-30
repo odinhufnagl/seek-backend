@@ -16,6 +16,7 @@ const core_1 = require("@sequelize/core");
 const sequelize_1 = require("sequelize");
 const _1 = require(".");
 const classes_1 = require("../../classes");
+const constants_1 = require("../../constants");
 const db_1 = require("../../services/db/db");
 const maps_1 = require("../../services/maps");
 const coordinate_1 = __importDefault(require("./coordinate"));
@@ -47,10 +48,10 @@ class Location extends sequelize_1.Model {
         });
         Location.beforeCreate((instance, options) => __awaiter(this, void 0, void 0, function* () {
             var _a;
-            const { address, postalCode, cityName, countryId, coordinate } = instance;
+            const { address, postalCode, cityName, countryCode, coordinate } = instance;
             //if there exists a coordinate and any of these fields are empty we will fetch them ourselves based on the coordinate
             if (coordinate &&
-                [address, postalCode, countryId, cityName].some((p) => !p)) {
+                [address, postalCode, countryCode, cityName].some((p) => !p)) {
                 const addressData = yield (0, maps_1.findAddressDataByCoordinate)(coordinate);
                 console.log(addressData);
                 if (!addressData) {
@@ -65,22 +66,24 @@ class Location extends sequelize_1.Model {
                 if (!cityName) {
                     instance.cityName = addressData.city;
                 }
-                if (countryId === undefined) {
+                if (countryCode === undefined) {
                     if (!addressData.country) {
                         throw Error();
                     }
-                    const foundCountryId = 
+                    const foundCountryCode = 
                     //TODO: Maybe do mapping because right now the code used in googleMaps has to be used in the database aswell
                     //should be enough with something like AddressDataCountryCodeToDBCode or something like that and it could probably just be in this model
                     (_a = (yield (0, db_1.dbFindOne)(_1.models.Country, {
-                        where: { code: addressData.country.code },
-                    }))) === null || _a === void 0 ? void 0 : _a.id;
-                    console.log("foundCountry", foundCountryId);
-                    if (foundCountryId === undefined) {
+                        where: {
+                            code: constants_1.CountryCodeConstants.Alpha2CodeToDB(addressData.country.code),
+                        },
+                    }))) === null || _a === void 0 ? void 0 : _a.code;
+                    console.log("foundCountry", foundCountryCode);
+                    if (foundCountryCode === undefined) {
                         //country does not exist error
                         throw Error();
                     }
-                    instance.countryId = foundCountryId;
+                    instance.countryCode = foundCountryCode;
                 }
             }
         }));

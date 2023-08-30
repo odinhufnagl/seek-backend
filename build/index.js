@@ -70,7 +70,44 @@ const initApp = () => {
     server.listen(process.env.PORT, () => console.log(`listening on port ${process.env.PORT}`));
 };
 index_1.sequelize.sync({ force: false }).then(() => __awaiter(void 0, void 0, void 0, function* () {
+    /* const languages = await dbBulkCreate(Language, [
+      { name: "en" },
+      { name: "se" },
+    ]);
+    const fileTypes = await dbBulkCreate(FileType, [
+      { name: "image" },
+      { name: "video" },
+    ] as FileType[]);*/
     try {
+        /*fs.readFile(
+          path.join(__dirname, "src/data/iso-alpha-2.json"),
+          "utf8",
+          async (err, data) => {
+            if (err) {
+              console.error("Error reading the file:", err);
+              return;
+            }
+    
+            try {
+              const countryCodes = JSON.parse(data) as Record<string, string>;
+    
+              // Now you have the array of objects from the JSON file
+              const countries = await dbBulkCreate(
+                Country,
+                Object.keys(countryCodes).map((code) => ({
+                  code,
+                  name: countryCodes[code],
+                }))
+              );
+              const countryArea = await dbBulkCreate(
+                CountryArea,
+                countries.map((c) => ({ countryCode: c.code }))
+              );
+            } catch (error) {
+              console.error("Error parsing JSON:", error);
+            }
+          }
+        );*/
         /* const fileTypes = await dbBulkCreate(FileType, [
           { name: "image" },
           { name: "video" },

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sequelize = exports.models = exports.UserQuestion = exports.UserChat = exports.User = exports.TimeZone = exports.StoredCronJob = exports.ReadMessage = exports.RadiusArea = exports.QuestionContent = exports.Question = exports.NotificationToken = exports.Message = exports.Location = exports.Language = exports.FileType = exports.File = exports.CountryArea = exports.Country = exports.Coordinate = exports.Chat = exports.Area = exports.Answer = void 0;
+exports.sequelize = exports.models = exports.UserQuestion = exports.UserChat = exports.UserBlocking = exports.User = exports.TimeZone = exports.StoredCronJob = exports.ReadMessage = exports.RadiusArea = exports.QuestionContent = exports.Question = exports.NotificationToken = exports.Message = exports.Location = exports.Language = exports.FileType = exports.File = exports.CountryArea = exports.Country = exports.Coordinate = exports.Chat = exports.Area = exports.Answer = void 0;
 const sequelize_1 = require("sequelize");
 const answer_1 = __importDefault(require("./answer"));
 exports.Answer = answer_1.default;
@@ -43,6 +43,8 @@ const timeZone_1 = __importDefault(require("./timeZone"));
 exports.TimeZone = timeZone_1.default;
 const user_1 = __importDefault(require("./user"));
 exports.User = user_1.default;
+const userBlocking_1 = __importDefault(require("./userBlocking"));
+exports.UserBlocking = userBlocking_1.default;
 const userChat_1 = __importDefault(require("./userChat"));
 exports.UserChat = userChat_1.default;
 const userQuestion_1 = __importDefault(require("./userQuestion"));
@@ -93,6 +95,7 @@ const models = {
     Language: language_1.default,
     QuestionContent: questionContent_1.default,
     StoredCronJob: storedCronJob_1.default,
+    UserBlocking: userBlocking_1.default,
 };
 exports.models = models;
 Object.keys(models).forEach((key, i) => {

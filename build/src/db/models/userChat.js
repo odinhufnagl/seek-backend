@@ -35,6 +35,11 @@ class UserChat extends sequelize_1.Model {
                 allowNull: false,
                 defaultValue: false,
             },
+            isBlocked: {
+                type: sequelize_1.DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
+            },
             lastRead: {
                 type: sequelize_1.DataTypes.DATE,
                 allowNull: false,
