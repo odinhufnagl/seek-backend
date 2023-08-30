@@ -45,6 +45,7 @@ const connecting_1 = require("./src/cronJobs/connecting");
 const index_1 = require("./src/db/models/index");
 const middleware_1 = require("./src/middleware");
 const index_2 = __importDefault(require("./src/routes/api/index"));
+const services_1 = require("./src/services");
 const socket_1 = require("./src/socket");
 const serviceAccount = require("./serviceAccountKey.json");
 admin.initializeApp({
@@ -70,6 +71,7 @@ const initApp = () => {
     server.listen(process.env.PORT, () => console.log(`listening on port ${process.env.PORT}`));
 };
 index_1.sequelize.sync({ force: false }).then(() => __awaiter(void 0, void 0, void 0, function* () {
+
     /* const languages = await dbBulkCreate(Language, [
       { name: "en" },
       { name: "se" },
@@ -78,6 +80,7 @@ index_1.sequelize.sync({ force: false }).then(() => __awaiter(void 0, void 0, vo
       { name: "image" },
       { name: "video" },
     ] as FileType[]);*/
+
     try {
         /*fs.readFile(
           path.join(__dirname, "src/data/iso-alpha-2.json"),
