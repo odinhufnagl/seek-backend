@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { ApiNoBodyProvidedError } from "../../../classes";
+import { ApiNoBodyProvidedError, ApiQueryParamsError } from "../../../classes";
 
 import {
   findAddressDataByCoordinate,
@@ -7,11 +7,10 @@ import {
   findLocationsBySearchWord,
 } from "../../../services/maps";
 import {
-  Request,
   Coordinate,
+  RequestAddress,
   RequestCitySearch,
   RequestCountry,
-  RequestAddress,
 } from "../../../types";
 
 const getCountryController = async (req: RequestCountry, res: Response) => {
@@ -63,7 +62,7 @@ const getLocationsBySearchController = async (
   const searchInput = req.query.search_query;
   const type = req.query.type;
   if (!searchInput) {
-    throw new ApiNoBodyProvidedError();
+    throw new ApiQueryParamsError();
   }
   if (type) {
     const locations = await findLocationsBySearchWord(searchInput, type);
