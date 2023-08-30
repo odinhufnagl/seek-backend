@@ -45,6 +45,7 @@ const connecting_1 = require("./src/cronJobs/connecting");
 const index_1 = require("./src/db/models/index");
 const middleware_1 = require("./src/middleware");
 const index_2 = __importDefault(require("./src/routes/api/index"));
+const services_1 = require("./src/services");
 const socket_1 = require("./src/socket");
 const serviceAccount = require("./serviceAccountKey.json");
 admin.initializeApp({
@@ -70,7 +71,44 @@ const initApp = () => {
     server.listen(process.env.PORT, () => console.log(`listening on port ${process.env.PORT}`));
 };
 index_1.sequelize.sync({ force: false }).then(() => __awaiter(void 0, void 0, void 0, function* () {
+    const languages = yield (0, services_1.dbBulkCreate)(index_1.Language, [
+        { name: "en" },
+        { name: "se" },
+    ]);
+    const fileTypes = yield (0, services_1.dbBulkCreate)(index_1.FileType, [
+        { name: "image" },
+        { name: "video" },
+    ]);
     try {
+        /*fs.readFile(
+          path.join(__dirname, "src/data/iso-alpha-2.json"),
+          "utf8",
+          async (err, data) => {
+            if (err) {
+              console.error("Error reading the file:", err);
+              return;
+            }
+    
+            try {
+              const countryCodes = JSON.parse(data) as Record<string, string>;
+    
+              // Now you have the array of objects from the JSON file
+              const countries = await dbBulkCreate(
+                Country,
+                Object.keys(countryCodes).map((code) => ({
+                  code,
+                  name: countryCodes[code],
+                }))
+              );
+              const countryArea = await dbBulkCreate(
+                CountryArea,
+                countries.map((c) => ({ countryCode: c.code }))
+              );
+            } catch (error) {
+              console.error("Error parsing JSON:", error);
+            }
+          }
+        );*/
         /* const fileTypes = await dbBulkCreate(FileType, [
           { name: "image" },
           { name: "video" },

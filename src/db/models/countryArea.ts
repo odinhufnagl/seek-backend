@@ -6,7 +6,7 @@ import Country from "./country";
 
 class CountryArea extends Model {
   public id!: number;
-  public countryId!: number;
+  public countryCode!: string;
 
   static _init(sequelize: Sequelize): void {
     CountryArea.init(
