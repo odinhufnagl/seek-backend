@@ -71,14 +71,16 @@ const initApp = () => {
     server.listen(process.env.PORT, () => console.log(`listening on port ${process.env.PORT}`));
 };
 index_1.sequelize.sync({ force: false }).then(() => __awaiter(void 0, void 0, void 0, function* () {
-    const languages = yield (0, services_1.dbBulkCreate)(index_1.Language, [
-        { name: "en" },
-        { name: "se" },
+
+    /* const languages = await dbBulkCreate(Language, [
+      { name: "en" },
+      { name: "se" },
     ]);
-    const fileTypes = yield (0, services_1.dbBulkCreate)(index_1.FileType, [
-        { name: "image" },
-        { name: "video" },
-    ]);
+    const fileTypes = await dbBulkCreate(FileType, [
+      { name: "image" },
+      { name: "video" },
+    ] as FileType[]);*/
+
     try {
         /*fs.readFile(
           path.join(__dirname, "src/data/iso-alpha-2.json"),
