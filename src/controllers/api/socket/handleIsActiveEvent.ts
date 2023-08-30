@@ -22,12 +22,10 @@ const handleSocketIsActiveEvent = async ({
   console.log("is active or not");
   const { userId, isActive } = data;
 
-  updateUser(
-    userId,
-    isActive
-      ? ({ isActive, lastActive: new Date().toISOString() } as User)
-      : ({ isActive } as User)
-  );
+  updateUser(userId, {
+    isActive,
+    lastActive: new Date().toISOString(),
+  } as User);
 
   //TODO: make this more efficient
   const allUserChats = await dbFindAll(UserChat, {
