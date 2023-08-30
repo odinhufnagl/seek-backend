@@ -15,7 +15,7 @@ const constants_1 = require("../constants");
 const models_1 = require("../db/models");
 const db_1 = require("./db/db");
 const searchChats = (userId, searchQuery, dbOptions) => __awaiter(void 0, void 0, void 0, function* () {
-    const userChats = yield (0, db_1.dbFindAndCountAll)(models_1.UserChat, Object.assign({ where: { userId }, include: [
+    const userChats = yield (0, db_1.dbFindAndCountAll)(models_1.UserChat, Object.assign({ where: { userId, isBlocked: false }, include: [
             {
                 model: models_1.Chat,
                 include: [
