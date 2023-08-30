@@ -21,9 +21,9 @@ export const findCityByCoordinate = async (
     return;
   }
 };
-
+type Alpha2CountryCode = string;
 type AddressData = {
-  country?: { code: string; name: string };
+  country?: { code: Alpha2CountryCode; name: string };
   address?: string;
   city?: string;
   postalCode?: string;
