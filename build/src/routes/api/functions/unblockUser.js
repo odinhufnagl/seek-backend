@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const search_1 = __importDefault(require("../../../controllers/api/functions/search"));
+const unblockUser_1 = __importDefault(require("../../../controllers/api/functions/unblockUser"));
 const middleware_1 = require("../../../middleware");
 const wrappers_1 = require("../../../wrappers");
 const router = express_1.default.Router();
-router.get("/", [middleware_1.verifyTokenMiddleware], (0, wrappers_1.asyncWrapper)(search_1.default.searchController));
+router.post("/", [middleware_1.verifyTokenMiddleware], (0, wrappers_1.asyncWrapper)(unblockUser_1.default.unblockUserController));
 exports.default = router;
