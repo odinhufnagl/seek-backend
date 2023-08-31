@@ -51,6 +51,7 @@ export const findAddressDataByCoordinate = async (
     const r = await axios(url);
     const data = r.data.results[0];
     const addressComponents = data.address_components;
+    console.log("addressComponents", addressComponents);
     addressComponents.forEach((c: any) => console.log(c.types));
     const address = findGoogleAddressComponentByType(
       addressComponents,
@@ -71,10 +72,15 @@ export const findAddressDataByCoordinate = async (
     return {
       address:
         address && addressNumber ? `${address} ${addressNumber}` : undefined,
-      city: findGoogleAddressComponentByType(
-        addressComponents,
-        "administrative_area_level_1"
-      )?.long_name,
+      city:
+        findGoogleAddressComponentByType(addressComponents, "locality")
+          ?.long_name ||
+        findGoogleAddressComponentByType(addressComponents, "postal_town")
+          ?.long_name ||
+        findGoogleAddressComponentByType(
+          addressComponents,
+          "sublocality_level_1"
+        )?.long_name,
       postalCode: findGoogleAddressComponentByType(
         addressComponents,
         "postal_code"
@@ -124,10 +130,15 @@ export const findAddressDataByPlaceId = async (
     return {
       address:
         address && addressNumber ? `${address} ${addressNumber}` : undefined,
-      city: findGoogleAddressComponentByType(
-        addressComponents,
-        "administrative_area_level_1"
-      )?.long_name,
+      city:
+        findGoogleAddressComponentByType(addressComponents, "locality")
+          ?.long_name ||
+        findGoogleAddressComponentByType(addressComponents, "postal_town")
+          ?.long_name ||
+        findGoogleAddressComponentByType(
+          addressComponents,
+          "sublocality_level_1"
+        )?.long_name,
       postalCode: findGoogleAddressComponentByType(
         addressComponents,
         "postal_code"
