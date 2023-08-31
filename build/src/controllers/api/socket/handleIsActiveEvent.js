@@ -16,9 +16,10 @@ const services_1 = require("../../../services");
 const handleSocketIsActiveEvent = ({ sender, senderId, data, }) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("is active or not");
     const { userId, isActive } = data;
-    (0, services_1.updateUser)(userId, isActive
-        ? { isActive, lastActive: new Date().toISOString() }
-        : { isActive });
+    (0, services_1.updateUser)(userId, {
+        isActive,
+        lastActive: new Date().toISOString(),
+    });
     //TODO: make this more efficient
     const allUserChats = yield (0, services_1.dbFindAll)(models_1.UserChat, {
         where: { userId },
