@@ -122,6 +122,8 @@ class SocketServer {
             senderId: userId,
             data: data as SocketMessageClientIsActiveData,
           });
+        case "ping":
+          return;
         default:
           break;
       }
