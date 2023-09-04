@@ -24,3 +24,10 @@ export interface RequestBodyUnblockUser extends RequestBody {
   userToBlockId: number;
   userBlockingId: number;
 }
+export interface RequestBodyResetPassword extends RequestBody {
+  email: string;
+}
+export interface RequestBodyUpdatePassword extends RequestBody {
+  newPassword: string;
+  resetPasswordToken: string;
+}

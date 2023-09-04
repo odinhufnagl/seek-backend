@@ -1,4 +1,5 @@
 import { DataTypes } from "@sequelize/core";
+import { compareSync, hashSync } from "bcryptjs";
 import { HasManyGetAssociationsMixin, Model, Sequelize } from "sequelize";
 import { DBConstants, FIRST_TIME_ZONE } from "../../constants";
 import Answer from "./answer";
@@ -22,6 +23,7 @@ class User extends Model {
   public profileImage?: File;
   public profileImageId?: number;
   public bio?: string;
+  public resetPasswordToken?: string;
   public instagramName?: string;
   public snapchatName?: string;
   public isActive!: boolean;
@@ -37,6 +39,7 @@ class User extends Model {
   public isBlockedBy!: User[];
   public hasBlocked!: User[];
   public userChat?: UserChat;
+
   public getChats!: HasManyGetAssociationsMixin<Chat>;
 
   public static fields = DBConstants.fields.user;
@@ -63,7 +66,7 @@ class User extends Model {
           allowNull: false,
           validate: {
             notEmpty: true,
-            len: [7, 100],
+            len: [5, 100],
           },
         },
         name: {
@@ -100,6 +103,9 @@ class User extends Model {
           type: DataTypes.STRING,
           defaultValue: "en",
         },
+        resetPasswordToken: {
+          type: DataTypes.STRING,
+        },
       },
       {
         modelName: "user",
@@ -110,7 +116,18 @@ class User extends Model {
         },
       }
     );
+    User.beforeCreate(async (user) => {
+      if (user.password) {
+        user.password = await user.hashPassword(user.password);
+      }
+    });
   }
+  validatePassword = async (password: string, encryptedPassword: string) => {
+    return await compareSync(password, encryptedPassword);
+  };
+  hashPassword = async (newPassword: string) => {
+    return await hashSync(newPassword);
+  };
 
   static associate() {
     User.belongsTo(File, {
