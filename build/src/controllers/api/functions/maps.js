@@ -51,7 +51,7 @@ const getLocationsBySearchController = (req, res) => __awaiter(void 0, void 0, v
     const searchInput = req.query.search_query;
     const type = req.query.type;
     if (!searchInput) {
-        throw new classes_1.ApiNoBodyProvidedError();
+        throw new classes_1.ApiQueryParamsError();
     }
     if (type) {
         const locations = yield (0, maps_1.findLocationsBySearchWord)(searchInput, type);

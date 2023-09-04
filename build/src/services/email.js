@@ -16,6 +16,8 @@ exports.sendEmail = void 0;
 const ejs_1 = __importDefault(require("ejs"));
 const fs_1 = __importDefault(require("fs"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const path_1 = __importDefault(require("path"));
+const constants_1 = require("../constants");
 const EMAIL_CLIENT_AUTH = {
     user: "odin.hufnagl@gmail.com",
     pass: process.env.EMAIL_PASSWORD,
@@ -26,7 +28,7 @@ const TRANSPORT = {
     secure: true,
     auth: EMAIL_CLIENT_AUTH,
 };
-const emailTemplatePath = (template) => __dirname + `assets/emailTemplates/${template}.ejs`;
+const emailTemplatePath = (template) => path_1.default.join(constants_1.PathConstants.defaultFolderPath.EMAIL_TEMPLATES_FOLDER, `${template}.ejs`);
 const getEmailTemplate = (template) => {
     return fs_1.default.readFileSync(emailTemplatePath(template), "utf-8");
 };
