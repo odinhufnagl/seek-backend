@@ -14,7 +14,9 @@ import {
   RequestBodyBlockUser,
   RequestBodyNewChatSeen,
   RequestBodyPutUser,
+  RequestBodyResetPassword,
   RequestBodyUnblockUser,
+  RequestBodyUpdatePassword,
 } from "./requestBody";
 
 export interface RequestWithUser extends ExpressRequest {
@@ -51,6 +53,13 @@ export interface RequestNewChatSeen extends Request {
 export interface RequestBlockUser extends Request {
   body: RequestBodyBlockUser;
 }
+export interface RequestResetPassword extends Request {
+  body: RequestBodyResetPassword;
+}
+export interface RequestUpdatePassword extends Request {
+  body: RequestBodyUpdatePassword;
+}
+
 export interface RequestUnblockUser extends Request {
   body: RequestBodyUnblockUser;
 }

@@ -1,7 +1,7 @@
 import { ServerLanguage } from "../types";
 
 export interface ForgotPasswordEmailParams {
-  link: string;
+  token: string;
 }
 export type EmailTemplate = "resetPassword";
 
@@ -18,7 +18,7 @@ export type EmailData = {
 };
 
 export type DefaultEmailForgotPasswordProps = {
-  link: string;
+  token: string;
   language: ServerLanguage;
   recipient: string;
 };

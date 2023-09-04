@@ -44,7 +44,7 @@ export const emailTemplate = (
 
 const defaultEmail = {
   resetPassword: ({
-    link,
+    token,
     recipient,
     language,
   }: DefaultEmailForgotPasswordProps) => ({
@@ -54,7 +54,7 @@ const defaultEmail = {
     template: emailTemplate("resetPassword", language),
     params: {
       text: emailText("resetPassword", language),
-      link,
+      token,
     },
   }),
 };
