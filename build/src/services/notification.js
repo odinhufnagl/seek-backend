@@ -35,6 +35,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.unsubscribeFromTopic = exports.subscribeToTopic = exports.sendNotificationToUsers = exports.sendNotification = void 0;
 const admin = __importStar(require("firebase-admin"));
 const sequelize_1 = require("sequelize");
+const constants_1 = require("../constants");
 const models_1 = require("../db/models");
 const db_1 = require("./db/db");
 const androidPriorityFromNotification = (notification) => notification.priority || "normal";
@@ -79,7 +80,10 @@ exports.unsubscribeFromTopic = unsubscribeFromTopic;
 const sendNotificationToUsers = (userIds, notification) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield (0, db_1.dbFindAll)(models_1.User, {
         where: { id: { [sequelize_1.Op.in]: userIds } },
-        include: [{ model: models_1.NotificationToken }],
+        include: [
+            { model: models_1.NotificationToken },
+            { model: models_1.File, as: constants_1.DBConstants.fields.user.PROFILE_IMAGE },
+        ],
     });
     if (!users) {
         return false;

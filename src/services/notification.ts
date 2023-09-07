@@ -1,7 +1,8 @@
 import * as admin from "firebase-admin";
 
 import { Op } from "sequelize";
-import { NotificationToken, User } from "../db/models";
+import { DBConstants } from "../constants";
+import { File, NotificationToken, User } from "../db/models";
 import { Notification } from "../types";
 import { dbFindAll } from "./db/db";
 
@@ -57,7 +58,10 @@ const sendNotificationToUsers = async (
 ): Promise<boolean> => {
   const users = await dbFindAll(User, {
     where: { id: { [Op.in]: userIds } },
-    include: [{ model: NotificationToken }],
+    include: [
+      { model: NotificationToken },
+      { model: File, as: DBConstants.fields.user.PROFILE_IMAGE },
+    ],
   });
   if (!users) {
     return false;

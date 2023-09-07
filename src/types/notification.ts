@@ -1,11 +1,10 @@
 import {
   DataMessagePayload,
-  MessagingPayload,
-  NotificationMessagePayload,
+  Notification as FBNotification,
 } from "firebase-admin/lib/messaging/messaging-api";
 import { ServerLanguage } from "./serverLanguages";
 
-export interface NotificationMessage extends NotificationMessagePayload {}
+export interface NotificationMessage extends FBNotification {}
 
 export interface NotificationData extends DataMessagePayload {}
 
@@ -36,7 +35,7 @@ export interface NotificationNewChatData extends NotificationData {
 export interface NotificationDailyQuestionData extends NotificationData {
   type: NotificationType;
 }
-export interface NotificationPayload extends MessagingPayload {
+export interface NotificationPayload {
   data: NotificationData;
   notification: NotificationMessage;
 }
