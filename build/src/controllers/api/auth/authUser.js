@@ -20,15 +20,14 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcryptjs_1 = require("bcryptjs");
 const users_1 = require("../../../services/db/users");
 const classes_1 = require("../../../classes");
 const constants_1 = require("../../../constants");
 const models_1 = require("../../../db/models");
 const auth_1 = require("../../../services/auth");
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const _a = req.body, { password } = _a, userData = __rest(_a, ["password"]);
-    const user = yield (0, users_1.createUser)(Object.assign({ password: (0, bcryptjs_1.hashSync)(password) }, userData), {
+    const userData = __rest(req.body, []);
+    const user = yield (0, users_1.createUser)(userData, {
         include: [
             { model: models_1.File, as: constants_1.DBConstants.fields.user.PROFILE_IMAGE },
             { model: models_1.Location, include: [{ model: models_1.Coordinate }] },
@@ -39,30 +38,23 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    try {
-        const user = yield (0, users_1.findUser)({
-            where: { email },
-            attributes: { include: ["password"] },
-            include: [{ model: models_1.File, as: constants_1.DBConstants.fields.user.PROFILE_IMAGE }],
-        });
-        if (!user.password) {
-            throw new classes_1.ApiWrongPasswordEmailError();
-        }
-        var passwordIsValid = (0, bcryptjs_1.compareSync)(password, user === null || user === void 0 ? void 0 : user.password);
-        if (!passwordIsValid) {
-            throw new classes_1.ApiWrongPasswordEmailError();
-        }
-        const token = (0, auth_1.generateUserToken)(user.id, constants_1.UserRole.USER);
-        res.send({
-            user,
-            accessToken: token,
-        });
+    const user = yield (0, users_1.findUser)({
+        where: { email },
+        attributes: { include: ["password"] },
+        include: [{ model: models_1.File, as: constants_1.DBConstants.fields.user.PROFILE_IMAGE }],
+    });
+    if (!user.password) {
+        throw new classes_1.ApiWrongPasswordEmailError();
     }
-    catch (e) {
-        if (e instanceof classes_1.DatabaseNotFoundError) {
-            throw new classes_1.ApiWrongPasswordEmailError();
-        }
+    var passwordIsValid = yield user.validatePassword(password, user.password);
+    if (!passwordIsValid) {
+        throw new classes_1.ApiWrongPasswordEmailError();
     }
+    const token = (0, auth_1.generateUserToken)(user.id, constants_1.UserRole.USER);
+    res.send({
+        user,
+        accessToken: token,
+    });
 });
 const authenticate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.curUserId || req.userRole !== constants_1.UserRole.USER) {
