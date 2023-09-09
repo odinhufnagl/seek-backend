@@ -24,14 +24,14 @@ exports.emailSender = emailSender;
 const emailTemplate = (type, language) => (0, translations_1.translations)()[language].email[type].template;
 exports.emailTemplate = emailTemplate;
 const defaultEmail = {
-    resetPassword: ({ link, recipient, language, }) => ({
+    resetPassword: ({ token, recipient, language, }) => ({
         recipient,
         sender: (0, exports.emailSender)("resetPassword", language),
         subject: (0, exports.emailSubject)("resetPassword", language),
         template: (0, exports.emailTemplate)("resetPassword", language),
         params: {
             text: (0, exports.emailText)("resetPassword", language),
-            link,
+            token,
         },
     }),
 };

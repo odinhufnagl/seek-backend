@@ -2,12 +2,25 @@ require("dotenv").config();
 import bodyParser from "body-parser";
 import express from "express";
 import * as admin from "firebase-admin";
+import fs from "fs";
 import { createServer } from "http";
+import path from "path";
+import { DBConstants } from "./src/constants";
 import { initCronJobs } from "./src/cronJobs/connecting";
-import { sequelize } from "./src/db/models/index";
+import {
+  Country,
+  CountryArea,
+  File,
+  FileType,
+  Language,
+  QuestionContent,
+  sequelize,
+} from "./src/db/models/index";
 import { errorHandler } from "./src/middleware";
 import apiRoutes from "./src/routes/api/index";
+import { dbBulkCreate } from "./src/services";
 import { SocketServer } from "./src/socket";
+
 const serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
@@ -54,7 +67,7 @@ sequelize.sync({ force: false }).then(async () => {
   ] as FileType[]);*/
 
   try {
-    /*fs.readFile(
+    fs.readFile(
       path.join(__dirname, "src/data/iso-alpha-2.json"),
       "utf8",
       async (err, data) => {
@@ -82,19 +95,12 @@ sequelize.sync({ force: false }).then(async () => {
           console.error("Error parsing JSON:", error);
         }
       }
-    );*/
-    /* const fileTypes = await dbBulkCreate(FileType, [
+    );
+    const fileTypes = await dbBulkCreate(FileType, [
       { name: "image" },
       { name: "video" },
     ] as FileType[]);
-    const countries = await dbBulkCreate(Country, [
-      { code: "SE" },
-      { code: "US" },
-    ] as Country[]);
-    const countryArea = await dbBulkCreate(CountryArea, [
-      { countryId: 1 },
-      { countryId: 2 },
-    ] as CountryArea[]);
+
     const languages = await dbBulkCreate(Language, [
       { name: "en" },
       { name: "se" },
@@ -141,7 +147,7 @@ sequelize.sync({ force: false }).then(async () => {
           { model: File, as: DBConstants.fields.questionContent.COVER_IMAGE },
         ],
       }
-    );*/
+    );
   } catch (e) {
     console.log("e", e);
     console.log("data is probably already created");

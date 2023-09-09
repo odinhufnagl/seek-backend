@@ -33,12 +33,13 @@ const findGoogleAddressComponentByType = (addressComponents, type) => {
     return addressComponents.find((component) => component.types.includes(type));
 };
 const findAddressDataByCoordinate = (coord) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     try {
         const url = constants_1.Endpoints.googleMaps.reverseGeocodeByCoordinate(coord);
         const r = yield (0, axios_1.default)(url);
         const data = r.data.results[0];
         const addressComponents = data.address_components;
+        console.log("addressComponents", addressComponents);
         addressComponents.forEach((c) => console.log(c.types));
         const address = (_a = findGoogleAddressComponentByType(addressComponents, "route")) === null || _a === void 0 ? void 0 : _a.long_name;
         const addressNumber = (_b = findGoogleAddressComponentByType(addressComponents, "street_number")) === null || _b === void 0 ? void 0 : _b.long_name;
@@ -46,8 +47,10 @@ const findAddressDataByCoordinate = (coord) => __awaiter(void 0, void 0, void 0,
         const countryName = (_d = findGoogleAddressComponentByType(addressComponents, "country")) === null || _d === void 0 ? void 0 : _d.long_name;
         return {
             address: address && addressNumber ? `${address} ${addressNumber}` : undefined,
-            city: (_e = findGoogleAddressComponentByType(addressComponents, "administrative_area_level_1")) === null || _e === void 0 ? void 0 : _e.long_name,
-            postalCode: (_f = findGoogleAddressComponentByType(addressComponents, "postal_code")) === null || _f === void 0 ? void 0 : _f.long_name,
+            city: ((_e = findGoogleAddressComponentByType(addressComponents, "locality")) === null || _e === void 0 ? void 0 : _e.long_name) ||
+                ((_f = findGoogleAddressComponentByType(addressComponents, "postal_town")) === null || _f === void 0 ? void 0 : _f.long_name) ||
+                ((_g = findGoogleAddressComponentByType(addressComponents, "sublocality_level_1")) === null || _g === void 0 ? void 0 : _g.long_name),
+            postalCode: (_h = findGoogleAddressComponentByType(addressComponents, "postal_code")) === null || _h === void 0 ? void 0 : _h.long_name,
             country: countryCode && countryName
                 ? {
                     code: countryCode,
@@ -67,20 +70,22 @@ const findAddressDataByCoordinate = (coord) => __awaiter(void 0, void 0, void 0,
 });
 exports.findAddressDataByCoordinate = findAddressDataByCoordinate;
 const findAddressDataByPlaceId = (placeId) => __awaiter(void 0, void 0, void 0, function* () {
-    var _g, _h, _j, _k, _l, _m;
+    var _j, _k, _l, _m, _o, _p, _q, _r;
     try {
         const url = constants_1.Endpoints.googleMaps.reverseGeocodeByPlaceId(placeId);
         const r = yield (0, axios_1.default)(url);
         const data = r.data.results[0];
         const addressComponents = data.address_components;
-        const address = (_g = findGoogleAddressComponentByType(addressComponents, "route")) === null || _g === void 0 ? void 0 : _g.long_name;
-        const addressNumber = (_h = findGoogleAddressComponentByType(addressComponents, "street_number")) === null || _h === void 0 ? void 0 : _h.long_name;
-        const countryCode = (_j = findGoogleAddressComponentByType(addressComponents, "country")) === null || _j === void 0 ? void 0 : _j.short_name;
-        const countryName = (_k = findGoogleAddressComponentByType(addressComponents, "country")) === null || _k === void 0 ? void 0 : _k.long_name;
+        const address = (_j = findGoogleAddressComponentByType(addressComponents, "route")) === null || _j === void 0 ? void 0 : _j.long_name;
+        const addressNumber = (_k = findGoogleAddressComponentByType(addressComponents, "street_number")) === null || _k === void 0 ? void 0 : _k.long_name;
+        const countryCode = (_l = findGoogleAddressComponentByType(addressComponents, "country")) === null || _l === void 0 ? void 0 : _l.short_name;
+        const countryName = (_m = findGoogleAddressComponentByType(addressComponents, "country")) === null || _m === void 0 ? void 0 : _m.long_name;
         return {
             address: address && addressNumber ? `${address} ${addressNumber}` : undefined,
-            city: (_l = findGoogleAddressComponentByType(addressComponents, "administrative_area_level_1")) === null || _l === void 0 ? void 0 : _l.long_name,
-            postalCode: (_m = findGoogleAddressComponentByType(addressComponents, "postal_code")) === null || _m === void 0 ? void 0 : _m.long_name,
+            city: ((_o = findGoogleAddressComponentByType(addressComponents, "locality")) === null || _o === void 0 ? void 0 : _o.long_name) ||
+                ((_p = findGoogleAddressComponentByType(addressComponents, "postal_town")) === null || _p === void 0 ? void 0 : _p.long_name) ||
+                ((_q = findGoogleAddressComponentByType(addressComponents, "sublocality_level_1")) === null || _q === void 0 ? void 0 : _q.long_name),
+            postalCode: (_r = findGoogleAddressComponentByType(addressComponents, "postal_code")) === null || _r === void 0 ? void 0 : _r.long_name,
             country: countryCode && countryName
                 ? {
                     code: countryCode,

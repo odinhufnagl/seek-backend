@@ -99,6 +99,8 @@ class SocketServer {
                             senderId: userId,
                             data: data,
                         });
+                    case "ping":
+                        return;
                     default:
                         break;
                 }
