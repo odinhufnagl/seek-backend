@@ -1,10 +1,9 @@
 import { Response } from "express";
 import moment from "moment-timezone";
-import { Op, literal } from "sequelize";
 import { ApiDatabaseNotFoundError } from "../../../../../classes";
 import { DBConstants, DateConstants } from "../../../../../constants";
-import { File, Question, User } from "../../../../../db/models";
-import { dbFindAll, dbFindByPK } from "../../../../../services";
+import { Answer, File, Question, User } from "../../../../../db/models";
+import { dbFindAll, dbFindByPK, dbFindOne } from "../../../../../services";
 import { Request } from "../../../../../types";
 
 const getNewQuestion = async (req: Request, res: Response): Promise<void> => {
@@ -17,11 +16,11 @@ const getNewQuestion = async (req: Request, res: Response): Promise<void> => {
     replacements: { userId },
     //TODO: this where seems slow. The literal should be improved, or implemented without pure SQL.
     where: {
-      id: {
+      /*id: {
         [Op.notIn]: literal(
           `(SELECT "questionId" FROM "answers" WHERE "answers"."userId" = :userId)`
         ),
-      },
+      },*/
       isFinished: false,
     },
     include: [{ model: File, as: DBConstants.fields.question.COVER_IMAGE }],
@@ -31,7 +30,7 @@ const getNewQuestion = async (req: Request, res: Response): Promise<void> => {
   console.log("questions", questions);
   //Check which one that time has passed, starting with latest
 
-  for (const question of questions) {
+  for await (const question of questions) {
     const usersTime = moment(
       moment()
         .tz(user.timeZone)
@@ -45,7 +44,10 @@ const getNewQuestion = async (req: Request, res: Response): Promise<void> => {
     );
     console.log("questionTime", questionTime);
     if (questionTime.isBefore(usersTime)) {
-      res.send(question);
+      const usersAnswer = await dbFindOne(Answer, {
+        where: { userId, questionId: question.id },
+      });
+      res.send({ usersAnswer, question });
       return;
     }
   }
