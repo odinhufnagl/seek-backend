@@ -11,4 +11,6 @@ export type ApiErrorType =
   | "E400"
   | "E500"
   | "E101"
-  | "E203";
+  | "E203"
+  | "E204"
+  | "E205";

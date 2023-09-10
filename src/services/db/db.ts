@@ -1,5 +1,6 @@
 import {
   Attributes,
+  BaseError,
   BulkCreateOptions,
   CreateOptions,
   DestroyOptions,
@@ -40,7 +41,7 @@ export const dbFindOne = async <M extends Model>(
     const res = await model.findOne(options);
     return res;
   } catch (e) {
-    throw DatabaseError.fromSequelizeError(e as Error);
+    throw DatabaseError.fromSequelizeError(e as BaseError);
   }
 };
 export const dbDelete = async <M extends Model>(
@@ -51,7 +52,7 @@ export const dbDelete = async <M extends Model>(
     const res = await model.destroy(options);
     return true;
   } catch (e) {
-    throw DatabaseError.fromSequelizeError(e as Error);
+    throw DatabaseError.fromSequelizeError(e as BaseError);
   }
 };
 
@@ -64,7 +65,7 @@ export const dbFindAll = async <M extends Model>(
     const res = await model.findAll(options);
     return res;
   } catch (e) {
-    throw DatabaseError.fromSequelizeError(e as Error);
+    throw DatabaseError.fromSequelizeError(e as BaseError);
   }
 };
 export const dbFindAndCountAll = async <M extends Model>(
@@ -76,7 +77,7 @@ export const dbFindAndCountAll = async <M extends Model>(
     const res = await model.findAndCountAll(options);
     return res;
   } catch (e) {
-    throw DatabaseError.fromSequelizeError(e as Error);
+    throw DatabaseError.fromSequelizeError(e as BaseError);
   }
 };
 
@@ -89,7 +90,7 @@ export const dbFindByPK = async <M extends Model>(
     const res = await model.findByPk(id, options);
     return res;
   } catch (e) {
-    throw DatabaseError.fromSequelizeError(e as Error);
+    throw DatabaseError.fromSequelizeError(e as BaseError);
   }
 };
 
@@ -103,7 +104,7 @@ export const dbCreate = async <M extends Model>(
     return res;
   } catch (e) {
     console.log(e);
-    throw DatabaseError.fromSequelizeError(e as Error);
+    throw DatabaseError.fromSequelizeError(e as BaseError);
   }
 };
 
@@ -148,6 +149,6 @@ export const dbBulkCreate = async <M extends Model>(
     return res;
   } catch (e) {
     console.log(e);
-    throw DatabaseError.fromSequelizeError(e as Error);
+    throw DatabaseError.fromSequelizeError(e as BaseError);
   }
 };
