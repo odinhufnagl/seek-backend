@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { EmptyResultError } from "sequelize";
+import { BaseError, EmptyResultError, ValidationError } from "sequelize";
 import { ApiErrorType } from "../types";
 
 /*E100s: Authentication and authorization errors.
@@ -22,11 +22,10 @@ export class ApiError extends Error {
   }
 
   static fromError(e: Error) {
+    console.log("pp", e);
     switch (true) {
       case e instanceof DatabaseNotFoundError:
         return new ApiDatabaseNotFoundError();
-      case e instanceof DatabaseError:
-        return new ApiDatabaseError();
       case e instanceof EmailError:
         return new ApiEmailError();
       case e instanceof ExternalError:
@@ -35,6 +34,16 @@ export class ApiError extends Error {
         return new ApiExternalError();
       case e instanceof NotificationSendError:
         return new ApiNotificationSendError();
+      case e instanceof DatabaseValidationError:
+        const firstField = (e as DatabaseValidationError)?.fields[0];
+        console.log("firstField", firstField);
+        if (firstField.field === "password") {
+          return new ApiPasswordValidationError();
+        }
+        if (firstField.field === "email") {
+          return new ApiEmailValidationError();
+        }
+
       default:
         return ApiError.createDefault();
     }
@@ -130,6 +139,16 @@ export class ApiWrongPasswordEmailError extends ApiError {
     super(401, "E101", "Wrong password or email");
   }
 }
+export class ApiPasswordValidationError extends ApiError {
+  constructor() {
+    super(401, "E204", "Password is not in the right format");
+  }
+}
+export class ApiEmailValidationError extends ApiError {
+  constructor() {
+    super(401, "E205", "Email is not in the right format");
+  }
+}
 export class ApiEmailAlreadyInUseError extends ApiError {
   constructor() {
     super(401, "E203", "Email already in use");
@@ -145,10 +164,20 @@ export class ApiQueryParamsError extends ApiError {
 export class ServiceError extends Error {}
 
 export class DatabaseError extends ServiceError {
-  static fromSequelizeError(e: Error) {
+  static fromSequelizeError(e: BaseError) {
     switch (true) {
       case e instanceof EmptyResultError:
         return new DatabaseNotFoundError(e.message);
+      case e instanceof ValidationError:
+        console.log("ell", e);
+
+        return new DatabaseValidationError(
+          e.message,
+          (e as ValidationError).errors.map((item) => ({
+            field: item.path,
+            key: item.validatorKey,
+          })) as DatabaseValidationField[]
+        );
       default:
         return new DatabaseError(e.message);
     }
@@ -157,6 +186,17 @@ export class DatabaseError extends ServiceError {
 
 export class DatabaseNotFoundError extends DatabaseError {}
 export class DatabaseCreateError extends DatabaseError {}
+type DatabaseValidationField = {
+  field: string | null;
+  key: "len" | "isEmail" | null;
+};
+export class DatabaseValidationError extends DatabaseError {
+  public fields: DatabaseValidationField[];
+  constructor(message: string, fields: DatabaseValidationField[]) {
+    super(message);
+    this.fields = fields;
+  }
+}
 export class DuplicateError extends DatabaseError {}
 export class AuthenticateError extends ServiceError {}
 export class EmailError extends ServiceError {}

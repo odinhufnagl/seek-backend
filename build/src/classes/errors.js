@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NotificationSendError = exports.ExternalError = exports.EmailError = exports.AuthenticateError = exports.DuplicateError = exports.DatabaseCreateError = exports.DatabaseNotFoundError = exports.DatabaseError = exports.ServiceError = exports.ApiQueryParamsError = exports.ApiEmailAlreadyInUseError = exports.ApiWrongPasswordEmailError = exports.ApiDatabaseAlreadyExistError = exports.ApiDatabaseNotFoundError = exports.ApiDatabaseCreateError = exports.ApiDatabaseError = exports.ApiNoKeyError = exports.ApiNoTokenError = exports.ApiAuthenticateError = exports.ApiEmailError = exports.ApiExternalError = exports.ApiNotificationSendError = exports.ApiBadBodyProvidedError = exports.ApiNoBodyProvidedError = exports.ApiDefaultError = exports.ApiNotAllowedError = exports.ApiError = void 0;
+exports.NotificationSendError = exports.ExternalError = exports.EmailError = exports.AuthenticateError = exports.DuplicateError = exports.DatabaseValidationError = exports.DatabaseCreateError = exports.DatabaseNotFoundError = exports.DatabaseError = exports.ServiceError = exports.ApiQueryParamsError = exports.ApiEmailAlreadyInUseError = exports.ApiEmailValidationError = exports.ApiPasswordValidationError = exports.ApiWrongPasswordEmailError = exports.ApiDatabaseAlreadyExistError = exports.ApiDatabaseNotFoundError = exports.ApiDatabaseCreateError = exports.ApiDatabaseError = exports.ApiNoKeyError = exports.ApiNoTokenError = exports.ApiAuthenticateError = exports.ApiEmailError = exports.ApiExternalError = exports.ApiNotificationSendError = exports.ApiBadBodyProvidedError = exports.ApiNoBodyProvidedError = exports.ApiDefaultError = exports.ApiNotAllowedError = exports.ApiError = void 0;
 const axios_1 = require("axios");
 const sequelize_1 = require("sequelize");
 /*E100s: Authentication and authorization errors.
@@ -19,11 +19,10 @@ class ApiError extends Error {
         return new ApiDefaultError();
     }
     static fromError(e) {
+        console.log("pp", e);
         switch (true) {
             case e instanceof DatabaseNotFoundError:
                 return new ApiDatabaseNotFoundError();
-            case e instanceof DatabaseError:
-                return new ApiDatabaseError();
             case e instanceof EmailError:
                 return new ApiEmailError();
             case e instanceof ExternalError:
@@ -32,6 +31,15 @@ class ApiError extends Error {
                 return new ApiExternalError();
             case e instanceof NotificationSendError:
                 return new ApiNotificationSendError();
+            case e instanceof DatabaseValidationError:
+                const firstField = e === null || e === void 0 ? void 0 : e.fields[0];
+                console.log("firstField", firstField);
+                if (firstField.field === "password") {
+                    return new ApiPasswordValidationError();
+                }
+                if (firstField.field === "email") {
+                    return new ApiEmailValidationError();
+                }
             default:
                 return ApiError.createDefault();
         }
@@ -128,6 +136,18 @@ class ApiWrongPasswordEmailError extends ApiError {
     }
 }
 exports.ApiWrongPasswordEmailError = ApiWrongPasswordEmailError;
+class ApiPasswordValidationError extends ApiError {
+    constructor() {
+        super(401, "E204", "Password is not in the right format");
+    }
+}
+exports.ApiPasswordValidationError = ApiPasswordValidationError;
+class ApiEmailValidationError extends ApiError {
+    constructor() {
+        super(401, "E205", "Email is not in the right format");
+    }
+}
+exports.ApiEmailValidationError = ApiEmailValidationError;
 class ApiEmailAlreadyInUseError extends ApiError {
     constructor() {
         super(401, "E203", "Email already in use");
@@ -148,6 +168,12 @@ class DatabaseError extends ServiceError {
         switch (true) {
             case e instanceof sequelize_1.EmptyResultError:
                 return new DatabaseNotFoundError(e.message);
+            case e instanceof sequelize_1.ValidationError:
+                console.log("ell", e);
+                return new DatabaseValidationError(e.message, e.errors.map((item) => ({
+                    field: item.path,
+                    key: item.validatorKey,
+                })));
             default:
                 return new DatabaseError(e.message);
         }
@@ -160,6 +186,13 @@ exports.DatabaseNotFoundError = DatabaseNotFoundError;
 class DatabaseCreateError extends DatabaseError {
 }
 exports.DatabaseCreateError = DatabaseCreateError;
+class DatabaseValidationError extends DatabaseError {
+    constructor(message, fields) {
+        super(message);
+        this.fields = fields;
+    }
+}
+exports.DatabaseValidationError = DatabaseValidationError;
 class DuplicateError extends DatabaseError {
 }
 exports.DuplicateError = DuplicateError;
