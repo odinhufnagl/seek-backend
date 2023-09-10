@@ -12,6 +12,7 @@ import { generateUserToken } from "../../../services/auth";
 
 const signUp = async (req: Request, res: Response): Promise<void> => {
   const { ...userData } = req.body;
+
   const user = await createUser(userData, {
     include: [
       { model: File, as: DBConstants.fields.user.PROFILE_IMAGE },

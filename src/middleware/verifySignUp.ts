@@ -14,6 +14,7 @@ const checkUserDuplicateEmail = async (
   if (userExists) {
     throw new ApiEmailAlreadyInUseError();
   }
+
   next();
 };
 
