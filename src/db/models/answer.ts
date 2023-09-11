@@ -33,7 +33,7 @@ class Answer extends Model {
           allowNull: false,
         },
         text: {
-          type: DataTypes.STRING,
+          type: DataTypes.TEXT("long"),
           allowNull: true,
         },
         isPrivate: {
