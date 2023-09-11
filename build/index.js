@@ -40,10 +40,7 @@ require("dotenv").config();
 const body_parser_1 = __importDefault(require("body-parser"));
 const express_1 = __importDefault(require("express"));
 const admin = __importStar(require("firebase-admin"));
-const fs_1 = __importDefault(require("fs"));
 const http_1 = require("http");
-const path_1 = __importDefault(require("path"));
-const constants_1 = require("./src/constants");
 const connecting_1 = require("./src/cronJobs/connecting");
 const index_1 = require("./src/db/models/index");
 const middleware_1 = require("./src/middleware");
@@ -81,72 +78,99 @@ index_1.sequelize.sync({ force: false }).then(() => __awaiter(void 0, void 0, vo
       { name: "image" },
       { name: "video" },
     ] as FileType[]);*/
-    try {
-        fs_1.default.readFile(path_1.default.join(__dirname, "src/data/iso-alpha-2.json"), "utf8", (err, data) => __awaiter(void 0, void 0, void 0, function* () {
-            if (err) {
-                console.error("Error reading the file:", err);
-                return;
-            }
-            try {
-                const countryCodes = JSON.parse(data);
-                // Now you have the array of objects from the JSON file
-                const countries = yield (0, services_1.dbBulkCreate)(index_1.Country, Object.keys(countryCodes).map((code) => ({
-                    code,
-                    name: countryCodes[code],
-                })));
-                const countryArea = yield (0, services_1.dbBulkCreate)(index_1.CountryArea, countries.map((c) => ({ countryCode: c.code })));
-            }
-            catch (error) {
-                console.error("Error parsing JSON:", error);
-            }
-        }));
-        const fileTypes = yield (0, services_1.dbBulkCreate)(index_1.FileType, [
-            { name: "image" },
-            { name: "video" },
-        ]);
-        const languages = yield (0, services_1.dbBulkCreate)(index_1.Language, [
-            { name: "en" },
-            { name: "se" },
-        ]);
-        const questionContent = yield (0, services_1.dbBulkCreate)(index_1.QuestionContent, [
-            {
-                title: "What's the most interesting thing that happened to you this week?",
-                coverImage: {
-                    url: "https://images.unsplash.com/photo-1520880867055-1e30d1cb001c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
-                    name: "movie",
-                },
-            },
-            {
-                title: "If you could travel anywhere in the world right now, where would you go and why?",
-                coverImage: {
-                    url: "https://images.unsplash.com/photo-1520880867055-1e30d1cb001c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
-                    name: "wish",
-                },
-            },
-            {
-                title: "What's a skill or hobby you've always wanted to learn but haven't had the chance to yet?",
-                coverImage: {
-                    url: "https://images.unsplash.com/35/JOd4DPGLThifgf38Lpgj_IMG.jpg?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNhZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                    name: "wish",
-                },
-            },
-            {
-                title: "If you could give your younger self one piece of advice, what would it be?",
-                coverImage: {
-                    url: "https://images.unsplash.com/35/JOd4DPGLThifgf38Lpgj_IMG.jpg?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNhZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                    name: "wish",
-                },
-            },
-        ], {
-            include: [
-                { model: index_1.File, as: constants_1.DBConstants.fields.questionContent.COVER_IMAGE },
-            ],
-        });
-    }
-    catch (e) {
-        console.log("e", e);
-        console.log("data is probably already created");
-    }
+    /*try {
+      fs.readFile(
+        path.join(__dirname, "src/data/iso-alpha-2.json"),
+        "utf8",
+        async (err, data) => {
+          if (err) {
+            console.error("Error reading the file:", err);
+            return;
+          }
+  
+          try {
+            const countryCodes = JSON.parse(data) as Record<string, string>;
+  
+            // Now you have the array of objects from the JSON file
+            const countries = await dbBulkCreate(
+              Country,
+              Object.keys(countryCodes).map((code) => ({
+                code,
+                name: countryCodes[code],
+              }))
+            );
+            const countryArea = await dbBulkCreate(
+              CountryArea,
+              countries.map((c) => ({ countryCode: c.code }))
+            );
+          } catch (error) {
+            console.error("Error parsing JSON:", error);
+          }
+        }
+      );
+      const fileTypes = await dbBulkCreate(FileType, [
+        { name: "image" },
+        { name: "video" },
+      ] as FileType[]);
+  
+      const languages = await dbBulkCreate(Language, [
+        { name: "en" },
+        { name: "se" },
+      ]);
+  
+      const questionContent = await dbBulkCreate(
+        QuestionContent,
+        [
+          {
+            title:
+              "When was the last time you impulsively picked up a new hobby?",
+            coverImage: {
+              url: "https://firebasestorage.googleapis.com/v0/b/seek-3abe9.appspot.com/o/questionImages%2Fman-fishing.jpg?alt=media&token=0bda457c-3bdc-45b1-a416-9d0231c28585",
+              name: "man-fishing",
+            } as File,
+          },
+          {
+            title:
+              "If you could go back and undo one thing in your life, what would it be?",
+            coverImage: {
+              url: "https://firebasestorage.googleapis.com/v0/b/seek-3abe9.appspot.com/o/questionImages%2Ffriends-on-beach.jpg?alt=media&token=f672e3d1-88fc-4e53-b6eb-6dfa76bdd8f9",
+              name: "friends-on-beach",
+            } as File,
+          },
+          {
+            title:
+              "If you could give your younger self one piece of advice, what would it be?",
+            coverImage: {
+              url: "https://firebasestorage.googleapis.com/v0/b/seek-3abe9.appspot.com/o/questionImages%2Ftwo-men-greeting.jpg?alt=media&token=f958a6d5-b265-476b-98e8-43df5450b1ab",
+              name: "two-men-greeting",
+            } as File,
+          },
+          {
+            title:
+              "If you could travel anywhere in the world right now, where would you go and why?",
+            coverImage: {
+              url: "https://firebasestorage.googleapis.com/v0/b/seek-3abe9.appspot.com/o/questionImages%2Fman-photographing-airbaloons.jpg?alt=media&token=a0d4530e-993d-4dc0-aa4c-bec1d5f7543a",
+              name: "man-photographing",
+            } as File,
+          },
+          {
+            title: "What’s a challenge you’ve overcome?",
+            coverImage: {
+              url: "https://firebasestorage.googleapis.com/v0/b/seek-3abe9.appspot.com/o/questionImages%2Fwoman-holding-stick.jpg?alt=media&token=9ac44104-fce4-4bd8-945c-f1336131934c",
+              name: "woman-holding-stick",
+            } as File,
+          },
+        ],
+        {
+          include: [
+            { model: File, as: DBConstants.fields.questionContent.COVER_IMAGE },
+          ],
+        }
+      );
+    } catch (e) {
+      console.log("e", e);
+      console.log("data is probably already created");
+    }*/
     const startCron = process.argv.includes("--cron");
     console.log(__dirname);
     if (startCron) {
