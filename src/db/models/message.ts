@@ -20,7 +20,7 @@ class Message extends Model {
           primaryKey: true,
         },
         text: {
-          type: DataTypes.STRING,
+          type: DataTypes.TEXT("long"),
           allowNull: true,
         },
       },
