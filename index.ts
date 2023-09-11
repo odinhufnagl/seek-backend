@@ -2,23 +2,11 @@ require("dotenv").config();
 import bodyParser from "body-parser";
 import express from "express";
 import * as admin from "firebase-admin";
-import fs from "fs";
 import { createServer } from "http";
-import path from "path";
-import { DBConstants } from "./src/constants";
 import { initCronJobs } from "./src/cronJobs/connecting";
-import {
-  Country,
-  CountryArea,
-  File,
-  FileType,
-  Language,
-  QuestionContent,
-  sequelize,
-} from "./src/db/models/index";
+import { sequelize } from "./src/db/models/index";
 import { errorHandler } from "./src/middleware";
 import apiRoutes from "./src/routes/api/index";
-import { dbBulkCreate } from "./src/services";
 import { SocketServer } from "./src/socket";
 
 const serviceAccount = require("./serviceAccountKey.json");
@@ -66,7 +54,7 @@ sequelize.sync({ force: false }).then(async () => {
     { name: "video" },
   ] as FileType[]);*/
 
-  try {
+  /*try {
     fs.readFile(
       path.join(__dirname, "src/data/iso-alpha-2.json"),
       "utf8",
@@ -111,34 +99,41 @@ sequelize.sync({ force: false }).then(async () => {
       [
         {
           title:
-            "What's the most interesting thing that happened to you this week?",
+            "When was the last time you impulsively picked up a new hobby?",
           coverImage: {
-            url: "https://images.unsplash.com/photo-1520880867055-1e30d1cb001c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
-            name: "movie",
+            url: "https://firebasestorage.googleapis.com/v0/b/seek-3abe9.appspot.com/o/questionImages%2Fman-fishing.jpg?alt=media&token=0bda457c-3bdc-45b1-a416-9d0231c28585",
+            name: "man-fishing",
           } as File,
         },
         {
           title:
-            "If you could travel anywhere in the world right now, where would you go and why?",
+            "If you could go back and undo one thing in your life, what would it be?",
           coverImage: {
-            url: "https://images.unsplash.com/photo-1520880867055-1e30d1cb001c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
-            name: "wish",
-          } as File,
-        },
-        {
-          title:
-            "What's a skill or hobby you've always wanted to learn but haven't had the chance to yet?",
-          coverImage: {
-            url: "https://images.unsplash.com/35/JOd4DPGLThifgf38Lpgj_IMG.jpg?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNhZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-            name: "wish",
+            url: "https://firebasestorage.googleapis.com/v0/b/seek-3abe9.appspot.com/o/questionImages%2Ffriends-on-beach.jpg?alt=media&token=f672e3d1-88fc-4e53-b6eb-6dfa76bdd8f9",
+            name: "friends-on-beach",
           } as File,
         },
         {
           title:
             "If you could give your younger self one piece of advice, what would it be?",
           coverImage: {
-            url: "https://images.unsplash.com/35/JOd4DPGLThifgf38Lpgj_IMG.jpg?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNhZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-            name: "wish",
+            url: "https://firebasestorage.googleapis.com/v0/b/seek-3abe9.appspot.com/o/questionImages%2Ftwo-men-greeting.jpg?alt=media&token=f958a6d5-b265-476b-98e8-43df5450b1ab",
+            name: "two-men-greeting",
+          } as File,
+        },
+        {
+          title:
+            "If you could travel anywhere in the world right now, where would you go and why?",
+          coverImage: {
+            url: "https://firebasestorage.googleapis.com/v0/b/seek-3abe9.appspot.com/o/questionImages%2Fman-photographing-airbaloons.jpg?alt=media&token=a0d4530e-993d-4dc0-aa4c-bec1d5f7543a",
+            name: "man-photographing",
+          } as File,
+        },
+        {
+          title: "What’s a challenge you’ve overcome?",
+          coverImage: {
+            url: "https://firebasestorage.googleapis.com/v0/b/seek-3abe9.appspot.com/o/questionImages%2Fwoman-holding-stick.jpg?alt=media&token=9ac44104-fce4-4bd8-945c-f1336131934c",
+            name: "woman-holding-stick",
           } as File,
         },
       ],
@@ -151,7 +146,7 @@ sequelize.sync({ force: false }).then(async () => {
   } catch (e) {
     console.log("e", e);
     console.log("data is probably already created");
-  }
+  }*/
 
   const startCron = process.argv.includes("--cron");
   console.log(__dirname);
