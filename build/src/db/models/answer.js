@@ -28,7 +28,7 @@ class Answer extends sequelize_1.Model {
                 allowNull: false,
             },
             text: {
-                type: core_1.DataTypes.STRING,
+                type: core_1.DataTypes.TEXT("long"),
                 allowNull: true,
             },
             isPrivate: {
