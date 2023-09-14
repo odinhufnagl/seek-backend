@@ -124,7 +124,7 @@ class User extends sequelize_1.Model {
         User.belongsTo(location_1.default, { as: this.fields.CURRENT_LOCATION });
         User.belongsTo(location_1.default);
         User.hasMany(answer_1.default);
-        User.hasMany(notificationToken_1.default);
+        User.hasMany(notificationToken_1.default, { onDelete: "CASCADE" });
         User.belongsTo(language_1.default);
         User.belongsToMany(User, {
             through: userBlocking_1.default,

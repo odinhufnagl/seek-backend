@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import Socket from "ws";
 import handleSocketChatMessage from "../controllers/api/socket/handleChatMessage";
 import handleSocketIsActiveEvent from "../controllers/api/socket/handleIsActiveEvent";
@@ -15,15 +16,26 @@ import { decodeToken } from "../utils";
 //Constructing a storage to store clients, may use the db later or something more safe
 
 type UserId = number;
-type Storage = Record<UserId, WebSocket>;
+type ClientId = string;
+type Storage = Record<ClientId, { userId: UserId; ws: WebSocket }>;
 class ClientsStorage {
   storage: Storage;
   constructor() {
-    this.storage = [];
+    this.storage = {};
   }
-  removeClient = (id: number) => delete this.storage[id];
-  storeClient = (id: number, ws: WebSocket) => (this.storage[id] = ws);
-  getClient = (id: number) => this.storage[id];
+  removeClient = (id: string) => delete this.storage[id];
+  storeClient = (id: string, userId: number, ws: WebSocket) =>
+    (this.storage[id] = { ws, userId });
+  getClient = (id: string) => this.storage[id];
+
+  getClientsByUserIds = (userIds: number | number[]) =>
+    Array.isArray(userIds)
+      ? Object.keys(this.storage).filter((clientId) =>
+          userIds.includes(this.storage[clientId].userId)
+        )
+      : Object.keys(this.storage).filter(
+          (clientId) => this.storage[clientId].userId === userIds
+        );
 }
 
 class SocketServer {
@@ -49,21 +61,16 @@ class SocketServer {
     userIds: number | number[],
     msg: SocketMessageServer
   ): void => {
-    if (Array.isArray(userIds)) {
-      this.broadcastMessage(
-        userIds
-          .map((id) => this.storage.getClient(id))
-          .filter((socket) => socket),
-        msg
-      );
-    } else {
-      if (this.storage.getClient(userIds)) {
-        console.log("info", this.storage.getClient(userIds), msg);
-        this.broadcastMessage(this.storage.getClient(userIds), msg);
-      }
-    }
+    const clients = this.storage.getClientsByUserIds(userIds);
+    console.log("clients", clients);
+    this.broadcastMessage(
+      clients
+        .map((id) => this.storage.getClient(id).ws)
+        .filter((socket) => socket),
+      msg
+    );
   };
-  //TODO: parse token more secure, this is just bad code temporary
+  //TODO: parse token more secure, this is just bad code temporary, maybe not that bad but anyways
   verifyRequest = (req: any): number | undefined => {
     const url = new URL("http://dummy" + req.url);
     const token = url.searchParams.get("auth");
@@ -76,30 +83,31 @@ class SocketServer {
     }
     return decoded.id;
   };
-  handleConnection = (userId: number, ws: Socket.WebSocket): void => {
-    this.storage.storeClient(userId, ws);
-    //set user is active in db
-    //then get all users that user has chat with
-    //then getClients that takes in a list of ids and returns a list of clients
-    //then send message to all the clients
+  handleConnection = (
+    clientId: string,
+    userId: number,
+    ws: Socket.WebSocket
+  ): void => {
+    this.storage.storeClient(clientId, userId, ws);
   };
 
-  handleClose = (userId: number): void => {
-    this.storage.removeClient(userId);
-    //set user is not active in db
-    //then get all users that user has chat with
-    //then getClients that takes in a list of ids and returns a list of clients
-    //then send message to all the clients
+  handleClose = (clientId: string): void => {
+    this.storage.removeClient(clientId);
   };
 
-  handleMessage = (msg: Socket.RawData, userId: number): void => {
+  handleMessage = (
+    msg: Socket.RawData,
+    clientId: string,
+    userId: number
+  ): void => {
     try {
       const { type, data }: SocketMessageClient = JSON.parse(msg.toString());
 
-      const sender = this.storage.getClient(userId);
-      if (!sender) {
+      const client = this.storage.getClient(clientId);
+      if (!client.ws) {
         return;
       }
+      const sender = client.ws;
 
       switch (type) {
         case "message":
@@ -146,17 +154,18 @@ class SocketServer {
         ws.close();
         return;
       }
+      const clientId: ClientId = uuidv4();
       console.log("connection opened");
-      this.handleConnection(userId, ws);
+      this.handleConnection(clientId, userId, ws);
 
       ws.on("close", () => {
         console.log("connection close");
-        this.handleClose(userId);
+        this.handleClose(clientId);
       });
 
       ws.on("message", (msg: Socket.RawData) => {
         console.log(msg.toString());
-        this.handleMessage(msg, userId);
+        this.handleMessage(msg, clientId, userId);
       });
     });
   }
