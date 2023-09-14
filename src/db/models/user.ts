@@ -140,7 +140,7 @@ class User extends Model {
     User.belongsTo(Location, { as: this.fields.CURRENT_LOCATION });
     User.belongsTo(Location);
     User.hasMany(Answer);
-    User.hasMany(NotificationToken);
+    User.hasMany(NotificationToken, { onDelete: "CASCADE" });
     User.belongsTo(Language);
     User.belongsToMany(User, {
       through: UserBlocking,
