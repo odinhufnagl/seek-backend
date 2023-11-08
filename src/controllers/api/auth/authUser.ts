@@ -47,15 +47,19 @@ const signIn = async (req: Request, res: Response): Promise<void> => {
 };
 
 const authenticate = async (req: Request, res: Response): Promise<void> => {
-  if (!req.curUserId || req.userRole !== UserRole.USER) {
+  try {
+    if (!req.curUserId || req.userRole !== UserRole.USER) {
+      throw new ApiAuthenticateError();
+    }
+    //user comes from middleware (token object)
+    const user = await findUserByPK(req.curUserId, {
+      include: [{ model: File, as: DBConstants.fields.user.PROFILE_IMAGE }],
+    });
+    const token = generateUserToken(user.id, UserRole.USER);
+    res.send({ user, accessToken: token });
+  } catch (e) {
     throw new ApiAuthenticateError();
   }
-  //user comes from middleware (token object)
-  const user = await findUserByPK(req.curUserId, {
-    include: [{ model: File, as: DBConstants.fields.user.PROFILE_IMAGE }],
-  });
-  const token = generateUserToken(user.id, UserRole.USER);
-  res.send({ user, accessToken: token });
 };
 
 export default { signUp, signIn, authenticate };

@@ -35,8 +35,9 @@ const profileImageFileUploadController = (req, res) => __awaiter(void 0, void 0,
     const fileBuffer = file.buffer;
     const compressedBuffer = yield (0, sharp_1.default)(fileBuffer)
         .resize({
-        fit: sharp_1.default.fit.contain,
+        position: "centre",
         width: constants_1.ExternalStorageConstants.defaultSize.PROFILE_IMAGE.width,
+        height: constants_1.ExternalStorageConstants.defaultSize.PROFILE_IMAGE.width,
     })
         .jpeg({ quality: constants_1.ExternalStorageConstants.defaultQuality.PROFILE_IMAGE })
         .withMetadata()
