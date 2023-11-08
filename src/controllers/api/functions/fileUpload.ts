@@ -33,8 +33,9 @@ const profileImageFileUploadController = async (
   const fileBuffer = file.buffer;
   const compressedBuffer = await sharp(fileBuffer)
     .resize({
-      fit: sharp.fit.contain,
+      position: "centre",
       width: ExternalStorageConstants.defaultSize.PROFILE_IMAGE.width,
+      height: ExternalStorageConstants.defaultSize.PROFILE_IMAGE.width,
     })
     .jpeg({ quality: ExternalStorageConstants.defaultQuality.PROFILE_IMAGE })
     .withMetadata()

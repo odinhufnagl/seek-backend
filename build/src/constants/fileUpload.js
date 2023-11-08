@@ -9,8 +9,8 @@ ExternalStorageConstants.defaultUploadFolderPath = {
     PROFILE_IMAGES: "profileImages",
 };
 ExternalStorageConstants.defaultQuality = {
-    PROFILE_IMAGE: 80,
+    PROFILE_IMAGE: 95,
 };
 ExternalStorageConstants.defaultSize = {
-    PROFILE_IMAGE: { width: 800, height: null },
+    PROFILE_IMAGE: { width: 400, height: 400 },
 };
