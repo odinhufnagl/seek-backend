@@ -57,14 +57,19 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 const authenticate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.curUserId || req.userRole !== constants_1.UserRole.USER) {
+    try {
+        if (!req.curUserId || req.userRole !== constants_1.UserRole.USER) {
+            throw new classes_1.ApiAuthenticateError();
+        }
+        //user comes from middleware (token object)
+        const user = yield (0, users_1.findUserByPK)(req.curUserId, {
+            include: [{ model: models_1.File, as: constants_1.DBConstants.fields.user.PROFILE_IMAGE }],
+        });
+        const token = (0, auth_1.generateUserToken)(user.id, constants_1.UserRole.USER);
+        res.send({ user, accessToken: token });
+    }
+    catch (e) {
         throw new classes_1.ApiAuthenticateError();
     }
-    //user comes from middleware (token object)
-    const user = yield (0, users_1.findUserByPK)(req.curUserId, {
-        include: [{ model: models_1.File, as: constants_1.DBConstants.fields.user.PROFILE_IMAGE }],
-    });
-    const token = (0, auth_1.generateUserToken)(user.id, constants_1.UserRole.USER);
-    res.send({ user, accessToken: token });
 });
 exports.default = { signUp, signIn, authenticate };
